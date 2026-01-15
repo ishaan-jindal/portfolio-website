@@ -14,8 +14,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ishaan Jindal",
-  description: "",
+  title: "Ishaan Jindal — Developer",
+  description:
+    "Developer portfolio focused on building technically interesting projects and clean systems.",
+  openGraph: {
+    title: "Ishaan Jindal — Developer",
+    url: "https://sacred99.online",
+    siteName: "Ishaan Jindal",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Ishaan Jindal Portfolio",
+      },
+    ],
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -28,7 +43,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      {/*<Header />*/} 
+        <Header /> 
         {children}
       </body>
     </html>

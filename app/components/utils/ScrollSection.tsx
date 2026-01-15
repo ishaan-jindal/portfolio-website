@@ -1,46 +1,39 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
 
 interface ScrollSectionProps {
   children: React.ReactNode;
 }
 
 const ScrollSection: React.FC<ScrollSectionProps> = ({ children }) => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    if (!sectionRef.current) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        } else {
-          entry.target.classList.remove('is-visible');
-        }
+        entry.target.classList.toggle("is-visible", entry.isIntersecting);
       },
       {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5, // Trigger when 50% of the section is visible
+        threshold: 0.18,
       }
     );
 
-    const currentRef = sectionRef.current;
+    observer.observe(sectionRef.current);
 
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={sectionRef} className="scroll-section">
-      {children}
+    <section
+      ref={sectionRef}
+      className="scroll-section w-full min-h-screen block py-24 bg-black"
+    >
+      <div className="w-full max-w-7xl mx-auto px-4">
+        {children}
+      </div>
     </section>
   );
 };

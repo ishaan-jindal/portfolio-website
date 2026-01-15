@@ -1,25 +1,33 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
-// A simple component for smooth scrolling
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  
+const sections = ["about", "projects", "contact"];
+
+const identityMap: Record<string, string> = {
+  projects: "sacred_nightmare",
+};
+
+const NavLink = ({
+  href,
+  active,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
+}) => {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const targetId = href.substring(1); // Get id from href (e.g., #about -> about)
+    const targetId = href.substring(1);
     const targetElement = document.getElementById(targetId);
-    
-    if (targetElement) {
-      // Find the main scroll container
-      const scrollContainer = document.querySelector('.scroll-container');
-      if (scrollContainer) {
-        // Scroll the container, not the window
-        scrollContainer.scrollTo({
-          top: targetElement.offsetTop,
-          behavior: 'smooth',
-        });
-      }
+    const container = document.querySelector(".scroll-container");
+
+    if (targetElement && container) {
+      container.scrollTo({
+        top: targetElement.offsetTop,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -27,7 +35,10 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
     <a
       href={href}
       onClick={handleClick}
-      className="text-neutral-300 hover:text-white transition-colors px-3 py-2 rounded-md text-sm font-medium"
+      className={`
+        font-mono text-xs transition-colors
+        ${active ? "text-white" : "text-neutral-500 hover:text-white"}
+      `}
     >
       {children}
     </a>
@@ -35,31 +46,62 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 };
 
 const Header = () => {
+  const [active, setActive] = useState("about");
+
+  useEffect(() => {
+    const container = document.querySelector(".scroll-container");
+    if (!container) return;
+
+    const handler = () => {
+      const scrollPos = container.scrollTop;
+
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+
+        if (
+          scrollPos >= el.offsetTop - 100 &&
+          scrollPos < el.offsetTop + el.offsetHeight - 100
+        ) {
+          setActive(id);
+          break;
+        }
+      }
+    };
+
+    container.addEventListener("scroll", handler);
+    return () => container.removeEventListener("scroll", handler);
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 bg-black/30 backdrop-blur-lg rounded-b-xl px-4">
-          
-          {/* Left Side: Name (acts as a 'Home' button) */}
-          <div>
-            <a
-              href="#about"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector('.scroll-container')?.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="text-lg font-bold text-white"
-            >
-              Ishaan Jindal
-            </a>
-          </div>
-          {/* Right Side: Navigation Links */}
-          <div className="flex items-center space-x-4">
-            <NavLink href="#about">About</NavLink>
-            <NavLink href="#works">Works</NavLink>
-            <NavLink href="#contact">Contact</NavLink>
-          </div>
+      <nav className="max-w-7xl mx-auto px-4">
+        <div className="h-14 flex items-center justify-between bg-black/40 backdrop-blur-lg border border-neutral-800 rounded-b-xl px-4 font-mono">
+          <span
+            key={active}
+            className="
+              text-sm text-white font-mono
+              transition-all duration-300
+              animate-identity
+            "
+          >
+            {identityMap[active] ?? "ishaan_jindal"}
+          </span>
 
+          <div className="hidden sm:flex gap-6">
+            <NavLink href="#about" active={active === "about"}>
+              about()
+            </NavLink>
+            <NavLink href="#projects" active={active === "projects"}>
+              projects()
+            </NavLink>
+            <NavLink href="#contact" active={active === "contact"}>
+              contact()
+            </NavLink>
+          </div>
+          <div className="sm:hidden text-xs text-neutral-500 font-mono">
+            scroll ↓
+          </div>
         </div>
       </nav>
     </header>
@@ -67,3 +109,4 @@ const Header = () => {
 };
 
 export default Header;
+

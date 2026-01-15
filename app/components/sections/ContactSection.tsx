@@ -1,43 +1,121 @@
-import ScrollSection from '../utils/ScrollSection';
+"use client";
+
+import { useState } from "react";
+import emailjs from "@emailjs/browser";
+import ScrollSection from "../utils/ScrollSection";
+
+type Status = "idle" | "sending" | "success" | "error";
 
 const ContactSection = () => {
+  const [status, setStatus] = useState<Status>("idle");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (status !== "idle") return;
+
+    setStatus("sending");
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        formData,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
+      setStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    }
+  };
+
   return (
     <ScrollSection>
-      <h2 className="text-3xl font-bold text-center mb-8">Contact Me</h2>
-      <form className="w-full max-w-lg">
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-first-name">
-              Name
-            </label>
-            <input className="appearance-none block w-full bg-neutral-800 border border-neutral-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-neutral-700" id="grid-first-name" type="text" placeholder="Jane" />
+      <div className="flex flex-col items-center font-mono">
+        <h2 className="text-3xl font-semibold mb-2">
+          Initiate Contact
+        </h2>
+        <p className="text-xs text-neutral-500 mb-8">
+          POST /contact
+        </p>
+
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-xl bg-neutral-900 rounded-xl shadow-lg 
+            p-5 sm:p-6 md:p-8"
+        >
+          <div className="space-y-4 mb-6">
+            <input
+              name="name"
+              required
+              placeholder="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full bg-neutral-800 border border-neutral-700 rounded px-4 py-2 text-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+            />
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full bg-neutral-800 border border-neutral-700 rounded px-4 py-2 text-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+            />
+            <textarea
+              name="message"
+              required
+              placeholder="message"
+              rows={4}
+              value={formData.message}
+              onChange={handleChange}
+              className="w-full bg-neutral-800 border border-neutral-700 rounded px-4 py-2 text-sm resize-none text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+            />
           </div>
-          <div className="w-full md:w-1/2 px-3">
-            <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-last-name">
-              Email
-            </label>
-            <input className="appearance-none block w-full bg-neutral-800 border border-neutral-700 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-neutral-700 focus:border-neutral-500" id="grid-last-name" type="email" placeholder="Doe@example.com" />
-          </div>
-        </div>
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full px-3">
-            <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-password">
-              Message
-            </label>
-            <textarea className=" no-resize appearance-none block w-full bg-neutral-800 border border-neutral-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-neutral-700 focus:border-neutral-500 h-48 resize-none" id="message"></textarea>
-          </div>
-        </div>
-        <div className="md:flex md:items-center">
-          <div className="md:w-1/3">
-            <button className="shadow bg-red-600 hover:bg-red-900 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" type="button">
-              Send
+
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-neutral-500">
+              status:{" "}
+              <span
+                className={
+                  status === "success"
+                    ? "text-green-500"
+                    : status === "sending"
+                    ? "text-yellow-500"
+                    : status === "error"
+                    ? "text-red-500"
+                    : "text-neutral-400"
+                }
+              >
+                {status}
+              </span>
+            </span>
+
+            <button
+              disabled={status === "sending"}
+              className="bg-red-600 hover:bg-red-700 px-4 py-3.5 sm:py-3 rounded text-white"
+            >
+              Send Request
             </button>
           </div>
-          <div className="md:w-2/3"></div>
-        </div>
-      </form>
+        </form>
+      </div>
     </ScrollSection>
   );
 };
 
 export default ContactSection;
+
