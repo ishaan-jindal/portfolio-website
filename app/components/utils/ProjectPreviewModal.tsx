@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Project } from "@/app/lib/projects";
+import { createPortal } from "react-dom";
 
 interface Props {
   project: Project;
@@ -20,7 +21,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
       return () => window.removeEventListener("keydown", handleKey);
     }, [onClose]);
 
-  return (
+  return createPortal(
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 font-mono"
       initial={{ opacity: 0 }}
@@ -106,7 +107,8 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 };
 
