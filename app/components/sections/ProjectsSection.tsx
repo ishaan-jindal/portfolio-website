@@ -8,10 +8,8 @@ import ProjectTile from "../utils/ProjectTile";
 import ProjectPreviewModal from "../utils/ProjectPreviewModal";
 
 const layouts = [
-  "md:col-span-1 md:row-span-2",
-  "md:col-span-3 md:row-span-3",
-  "md:col-span-1 md:row-span-2",
   "md:col-span-1 md:row-span-3",
+  "md:col-span-3 md:row-span-1",
   "md:col-span-1 md:row-span-3",
   "md:col-span-3 md:row-span-2",
 ];
