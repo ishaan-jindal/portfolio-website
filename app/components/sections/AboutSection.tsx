@@ -18,9 +18,9 @@ const AboutSection = () => {
               sequence={[
                 "app_developer()",
                 1200,
-                "flutter_engineer()",
+                "debugger()",
                 1200,
-                "linux_enthusiast()",
+                "problem_solver()",
                 1200,
               ]}
               speed={50}
