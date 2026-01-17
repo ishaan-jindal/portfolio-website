@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Project } from "@/app/lib/projects";
 import { createPortal } from "react-dom";
+import SystemTile from "./SystemTile";
 
 interface Props {
   project: Project;
@@ -58,6 +59,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
 
         {/* Image */}
         <div className="relative w-full h-56">
+        { project.visual === "image" && project.imageUrl ? (
           <Image
             src={project.imageUrl}
             alt={project.title}
@@ -65,6 +67,9 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
             className="object-cover"
             unoptimized
           />
+        ) : (
+          <SystemTile project={project} />
+        )}
         </div>
 
         {/* Content */}

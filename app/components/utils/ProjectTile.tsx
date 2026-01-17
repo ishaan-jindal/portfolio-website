@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
+import SystemTile from "./SystemTile";
 import type { Project } from "@/app/lib/projects";
 
 interface ProjectTileProps {
@@ -21,6 +22,7 @@ const ProjectTile: React.FC<ProjectTileProps> = ({ project, onClick }) => {
       "
       whileHover={{ scale: 1.03 }}
     >
+    {project.visual === "image" && project.imageUrl ? (
       <Image
         src={project.imageUrl}
         alt={project.title}
@@ -28,6 +30,9 @@ const ProjectTile: React.FC<ProjectTileProps> = ({ project, onClick }) => {
         className="object-cover"
         unoptimized
       />
+    ) : (
+      <SystemTile project={project} />
+    )}
     </motion.button>
   );
 };

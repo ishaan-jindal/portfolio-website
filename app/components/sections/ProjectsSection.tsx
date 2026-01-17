@@ -8,10 +8,10 @@ import ProjectTile from "../utils/ProjectTile";
 import ProjectPreviewModal from "../utils/ProjectPreviewModal";
 
 const layouts = [
-  "md:col-span-1 md:row-span-3",
-  "md:col-span-3 md:row-span-1",
-  "md:col-span-1 md:row-span-3",
+  "md:col-span-1 md:row-span-2",
   "md:col-span-3 md:row-span-2",
+  "md:col-span-2 md:row-span-2",
+  "md:col-span-2 md:row-span-2",
 ];
 
 const ProjectsSection = () => {
@@ -33,7 +33,7 @@ const ProjectsSection = () => {
         {/* Grid */}
         <div className="
           grid 
-          grid-cols-1 sm:grid-clos-2 md:grid-cols-5
+          grid-cols-1 sm:grid-clos-2 md:grid-cols-4
           auto-rows-[180px] md:auto-rows-[140px] 
           gap-4
         ">
