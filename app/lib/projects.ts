@@ -3,7 +3,7 @@ export type Project = {
   title: string;
   description: string;
   visual: "image" | "system";
-  imageUrl: string;
+  imageUrl?: string;
   githubLink?: string; 
   liveLink?: string;
 };
