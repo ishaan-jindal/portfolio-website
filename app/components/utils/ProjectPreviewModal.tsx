@@ -7,10 +7,11 @@ import SystemTile from "./SystemTile";
 
 interface Props {
   project: Project;
+  layoutId: string;
   onClose: () => void;
 }
 
-const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
+const ProjectPreviewModal: React.FC<Props> = ({ project, layoutId, onClose }) => {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -34,7 +35,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
       onClick={onClose}
     >
       <motion.div
-        layoutId={`project-${project.id}`}
+        layoutId={layoutId}
         onClick={(e) => e.stopPropagation()}
         className="
           glass-panel

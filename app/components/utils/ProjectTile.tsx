@@ -5,13 +5,14 @@ import type { Project } from "@/app/lib/projects";
 
 interface ProjectTileProps {
   project: Project;
+  uniqueId: string;
   onClick: () => void;
 }
 
-const ProjectTile: React.FC<ProjectTileProps> = ({ project, onClick }) => {
+const ProjectTile: React.FC<ProjectTileProps> = ({ project, uniqueId, onClick }) => {
   return (
     <motion.button
-      layoutId={`project-${project.id}`}
+      layoutId={uniqueId}
       onClick={onClick}
       className="
         relative w-full h-full text-left

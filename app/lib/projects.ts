@@ -34,7 +34,7 @@ export const projects: Project[] = [
     id: "swift-write",
     title: "SwiftWrite",
     description:
-      "A flutter mobile app for quick note making, limited code execution and much more.",
+      "Local-first, cross-platform Flutter writing app with Markdown support, hybrid todo editing, optional cloud sync, and code execution.",
     visual: "image",
     imageUrl: "swiftwrite.png",
     githubLink: "https://github.com/ishaan-jindal/SwiftWrite",
