@@ -4,7 +4,7 @@ export type Project = {
   description: string;
   visual: "image" | "system";
   imageUrl?: string;
-  githubLink?: string; 
+  githubLink?: string;
   liveLink?: string;
 };
 
@@ -16,7 +16,7 @@ export const projects: Project[] = [
       "A full-stack club management application built with flutter and supabase",
     visual: "image",
     imageUrl: "wedroid.png",
-    githubLink: "https://github.com/SacredNightmare99/wedroid",
+    githubLink: "https://github.com/ishaan-jindal/wedroid",
   },
 
   {
@@ -26,7 +26,7 @@ export const projects: Project[] = [
       'Steal CSS "steals" any website\'s CSS, vandalizes it with chaotic new styles, and displays the beautifully ruined result.',
     visual: "image",
     imageUrl: "steal-css.png",
-    githubLink: "https://github.com/SacredNightmare99/steal-css",
+    githubLink: "https://github.com/ishaan-jindal/steal-css",
     liveLink: "https://steal-css.sacred99.online/",
   },
 
@@ -34,18 +34,18 @@ export const projects: Project[] = [
     id: "swift-write",
     title: "SwiftWrite",
     description:
-      "A flutter mobile app for quick note making, limited code execution and much more.",
+      "Local-first, cross-platform Flutter writing app with Markdown support, hybrid todo editing, optional cloud sync, and code execution.",
     visual: "image",
     imageUrl: "swiftwrite.png",
-    githubLink: "https://github.com/SacredNightmare99/SwiftWrite",
+    githubLink: "https://github.com/ishaan-jindal/SwiftWrite",
   },
 
   {
-    id: "debug-platform",
-    title: "Debugging Challenge Engine",
+    id: "code-executor",
+    title: "Code-Executor",
     description:
-      "A backend platform for debugging-first coding challenges that evaluates functional correctness first, then enforces minimal, genuine fixes using a custom debug-aware similarity engine.",
+      "Secure, isolated code execution service with JWT authentication, user-based rate limiting, Docker + gVisor sandbox, and comprehensive monitoring.",
     visual: "system",
-    githubLink: "https://github.com/SacredNightmare99/debug-platform",
+    githubLink: "https://github.com/ishaan-jindal/code-executor",
   },
 ];
