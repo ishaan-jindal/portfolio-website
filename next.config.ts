@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'sacred99.online',
+        hostname: 'ishaanjindal.tech',
       },
     ],
   },

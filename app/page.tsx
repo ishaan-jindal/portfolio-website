@@ -7,16 +7,16 @@ import Footer from './components/layout/Footer';
 
 export default function Home() {
   return (
-    <div className="scroll-container h-screen w-full overflow-y-auto relative">
-      <div id="about">
+    <div className="w-full relative flex flex-col items-center">
+      <div id="about" className="w-full min-h-screen flex items-center justify-center pt-20">
         <AboutSection />
       </div>
 
-      <div id="projects">
+      <div id="projects" className="w-full min-h-screen flex items-center justify-center py-20">
         <ProjectsSection />
       </div>
 
-      <div id="contact">
+      <div id="contact" className="w-full min-h-screen flex items-center justify-center py-20">
         <ContactSection />
       </div>
 

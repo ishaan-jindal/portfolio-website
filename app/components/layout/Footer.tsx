@@ -5,7 +5,7 @@ const Footer = () => {
         <span>© {new Date().getFullYear()} Ishaan Jindal</span>
 
         <span className="opacity-70">
-          sacred99.online
+          ishaanjindal.tech
         </span>
       </div>
     </footer>

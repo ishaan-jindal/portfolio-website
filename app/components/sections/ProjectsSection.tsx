@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import ScrollSection from "../utils/ScrollSection";
+import Reveal from "../utils/Reveal";
 import { projects } from "@/app/lib/projects";
 import ProjectTile from "../utils/ProjectTile";
 import ProjectPreviewModal from "../utils/ProjectPreviewModal";
@@ -18,29 +18,29 @@ const ProjectsSection = () => {
   const [activeProject, setActiveProject] = useState<number | null>(null);
 
   return (
-    <ScrollSection>
-      <div className="w-full max-w-6xl mx-auto px-4 font-mono">
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-white">
-            projects()
+    <div className="w-full max-w-6xl mx-auto px-6 font-sans py-10">
+      <Reveal delay={0.1}>
+        <div className="mb-10 text-center sm:text-left">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-2">
+            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">Projects</span>
           </h2>
-          <p className="text-xs text-neutral-500">
-            GET /projects ({projects.length} items)
+          <p className="text-sm text-neutral-400 font-mono">
+            GET /projects ({projects.length} curated works)
           </p>
         </div>
+      </Reveal>
 
-        {/* Grid */}
+      <Reveal delay={0.2}>
         <div className="
           grid 
-          grid-cols-1 sm:grid-clos-2 md:grid-cols-4
-          auto-rows-[180px] md:auto-rows-[140px] 
-          gap-4
+          grid-cols-1 sm:grid-cols-2 md:grid-cols-4
+          auto-rows-[220px] md:auto-rows-[240px] 
+          gap-4 md:gap-6
         ">
           {projects.map((project, index) => (
             <div
               key={project.id}
-              className={`${layouts[index % layouts.length]} relative`}
+              className={`${layouts[index % layouts.length]} relative group perspective`}
             >
               <ProjectTile
                 project={project}
@@ -49,9 +49,8 @@ const ProjectsSection = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Reveal>
 
-      {/* Modal */}
       <AnimatePresence>
         {activeProject !== null && (
           <ProjectPreviewModal
@@ -60,7 +59,7 @@ const ProjectsSection = () => {
           />
         )}
       </AnimatePresence>
-    </ScrollSection>
+    </div>
   );
 };
 
