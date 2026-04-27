@@ -1,130 +1,116 @@
+"use client";
+
 import { useEffect } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import type { Project } from "@/app/lib/projects";
 import { createPortal } from "react-dom";
-import SystemTile from "./SystemTile";
 
 interface Props {
   project: Project;
-  layoutId: string;
   onClose: () => void;
 }
 
-const ProjectPreviewModal: React.FC<Props> = ({ project, layoutId, onClose }) => {
+const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
+  const prefersReducedMotion = useReducedMotion();
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
 
     window.addEventListener("keydown", handleKey);
-      return () => window.removeEventListener("keydown", handleKey);
-    }, [onClose]);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onClose]);
 
-  // Ensure document.body exists (for SSR)
-  if (typeof document === 'undefined') return null;
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm px-4 font-sans"
-      initial={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(8,10,14,0.86)] px-4 font-sans"
+      initial={prefersReducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      exit={prefersReducedMotion ? undefined : { opacity: 0 }}
       onClick={onClose}
     >
-      <motion.div
-        layoutId={layoutId}
+      <motion.article
         onClick={(e) => e.stopPropagation()}
-        className="
-          glass-panel
-          max-w-2xl w-full
-          rounded-2xl overflow-hidden
-          shadow-[0_20px_50px_rgba(0,0,0,0.5)]
-          relative
-        "
+        className="ascii-panel max-w-3xl w-full max-h-[88vh] overflow-y-auto scrollbar-hide"
+        initial={prefersReducedMotion ? false : { y: 18, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={prefersReducedMotion ? undefined : { y: 18, opacity: 0 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
       >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="
-            absolute top-4 right-4 z-20
-            bg-black/60 text-white
-            w-8 h-8 rounded-full
-            flex items-center justify-center
-            hover:bg-red-600 transition-colors
-            text-lg pb-1
-            backdrop-blur-md border border-white/10
-          "
-        >
-          &times;
-        </button>
-
-        {/* Image */}
-        <div className="relative w-full h-64 md:h-72">
-        { project.visual === "image" && project.imageUrl ? (
-          <>
-            <Image
-              src={project.imageUrl}
-              alt={project.title}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          </>
-        ) : (
-          <SystemTile project={project} />
-        )}
-        </div>
-
-        {/* Content */}
-        <div className="p-6 md:p-8 relative -mt-16 z-10">
-          {/* Header */}
-          <div className="mb-4">
-            <h3 className="text-2xl md:text-3xl font-bold text-white drop-shadow-md">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <p className="font-mono text-sm text-[var(--accent)]">{project.asciiLabel}</p>
+            <h3 className="mt-2 text-3xl font-semibold text-[var(--foreground)]">
               {project.title}
             </h3>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded border border-red-500/30 font-mono">
-                {project.id}
-              </span>
-            </div>
+            <p className="mt-2 font-mono text-sm text-[var(--muted)]">
+              {project.shortTitle}
+            </p>
           </div>
 
-          {/* Description */}
-          <p className="text-base text-neutral-300 leading-relaxed mb-8">
+          <button
+            onClick={onClose}
+            className="font-mono text-xl text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            aria-label="Close project details"
+          >
+            x
+          </button>
+        </div>
+
+        <div className="mt-7 border-t border-[var(--border)] pt-7">
+          <p className="text-base leading-8 text-[var(--muted)]">
             {project.description}
           </p>
 
-          {/* Actions */}
-          <div className="flex gap-4 text-sm font-medium">
-            {project.githubLink && (
-              <a
-                href={project.githubLink}
-                target="_blank"
-                className="px-5 py-2.5 rounded-full bg-white text-black hover:bg-neutral-200 transition-colors shadow-lg"
-              >
-                View Source
-              </a>
-            )}
-            {project.liveLink && (
-              <a
-                href={project.liveLink}
-                target="_blank"
-                className="px-5 py-2.5 rounded-full bg-transparent border border-white/20 text-white hover:bg-white/10 transition-colors"
-              >
-                Live Demo ↗
-              </a>
-            )}
+          <div className="mt-7">
+            <h4 className="font-mono text-sm text-[var(--foreground)] mb-3">
+              Highlights
+            </h4>
+            <ul className="space-y-3">
+              {project.highlights.map((highlight) => (
+                <li
+                  key={highlight}
+                  className="font-mono text-sm leading-6 text-[var(--muted)]"
+                >
+                  <span className="text-[var(--accent)]" aria-hidden="true">- </span>
+                  {highlight}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-7 flex flex-wrap gap-2">
+            {project.stack.map((item) => (
+              <span key={item} className="text-chip">
+                {item}
+              </span>
+            ))}
           </div>
         </div>
-      </motion.div>
+
+        <div className="mt-8 flex flex-wrap gap-4">
+          {project.githubLink && (
+            <a
+              href={project.githubLink}
+              target="_blank"
+              className="text-button text-button--primary"
+            >
+              View Source
+            </a>
+          )}
+          {project.liveLink && (
+            <a href={project.liveLink} target="_blank" className="text-button">
+              Live Demo
+            </a>
+          )}
+        </div>
+      </motion.article>
     </motion.div>,
     document.body
   );
 };
 
 export default ProjectPreviewModal;
-

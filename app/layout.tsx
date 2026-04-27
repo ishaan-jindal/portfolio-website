@@ -14,9 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ishaanjindal.tech"),
   title: "Ishaan Jindal — Developer",
   description:
-    "Developer portfolio focused on building technically interesting projects and clean systems.",
+    "Portfolio of Ishaan Jindal, a Flutter-focused developer interested in clean interfaces, unusual ideas, and system-level problem solving.",
   openGraph: {
     title: "Ishaan Jindal — Developer",
     url: "https://ishaanjindal.tech",
@@ -43,10 +44,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative min-h-screen flex flex-col`}
       >
-        {/* Glow ambient backgrounds */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-red-900/10 blur-[120px]" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-red-900/5 blur-[120px]" />
+          <div className="absolute inset-0 bg-page-texture" />
         </div>
 
         <Header />
