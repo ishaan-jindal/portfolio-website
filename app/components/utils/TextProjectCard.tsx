@@ -26,17 +26,17 @@ const TextProjectCard = ({ project, onClick }: Props) => {
       <span className="mt-2 block text-xl font-semibold text-[var(--foreground)]">
         {project.title}
       </span>
-      <span className="mt-5 block min-h-24 font-mono text-sm leading-6 text-[var(--muted)]">
+      <span className="mt-3 sm:mt-5 block min-h-16 sm:min-h-24 font-mono text-sm leading-6 text-[var(--muted)]">
         {project.description}
       </span>
-      <span className="mt-6 flex flex-wrap gap-2">
+      <span className="mt-4 sm:mt-6 flex flex-wrap gap-2">
         {project.stack.slice(0, 4).map((item) => (
           <span key={item} className="text-chip">
             {item}
           </span>
         ))}
       </span>
-      <span className="mt-6 block font-mono text-xs text-[var(--accent-2)]">
+      <span className="mt-4 sm:mt-6 block font-mono text-xs text-[var(--accent-2)]">
         read details
       </span>
     </motion.button>

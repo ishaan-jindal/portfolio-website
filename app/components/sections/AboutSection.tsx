@@ -19,9 +19,9 @@ const skillGroups = [
 
 const AboutSection = () => {
   return (
-    <div className="relative w-full px-6 pt-20 pb-20 min-h-screen">
+    <div className="relative w-full px-4 sm:px-6 pt-16 sm:pt-20 pb-16 sm:pb-20 min-h-screen">
       <div className="relative isolate min-h-[calc(100vh-5rem)] w-full overflow-hidden flex items-center">
-        <div className="pointer-events-none absolute inset-y-0 right-[-22%] z-[-2] flex w-[105%] items-center justify-center opacity-38 sm:right-[-16%] sm:w-[88%] sm:opacity-44 lg:right-[-8%] lg:w-[62%] lg:opacity-52">
+        <div className="pointer-events-none absolute inset-y-0 right-[-30%] z-[-2] flex w-[120%] items-center justify-center opacity-20 sm:right-[-16%] sm:w-[88%] sm:opacity-44 lg:right-[-8%] lg:w-[62%] lg:opacity-52">
           <Image
             src="/ascii-me.png"
             alt=""
@@ -43,16 +43,16 @@ const AboutSection = () => {
               </p>
             </Reveal>
             <Reveal delay={0.2}>
-              <h1 className="max-w-4xl text-6xl sm:text-7xl md:text-8xl font-semibold leading-[0.95] text-[var(--foreground)] mb-7">
+              <h1 className="max-w-4xl text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold leading-[0.95] text-[var(--foreground)] mb-5 sm:mb-7">
                 Ishaan Jindal
               </h1>
             </Reveal>
 
             <Reveal delay={0.3}>
-              <p className="max-w-2xl text-xl md:text-2xl text-[var(--soft)] leading-9 mb-5">
+              <p className="max-w-2xl text-lg sm:text-xl md:text-2xl text-[var(--soft)] leading-7 sm:leading-9 mb-4 sm:mb-5">
                 Flutter-first developer focused on clean architecture, system design, and experimental builds.
               </p>
-              <p className="max-w-2xl text-base md:text-lg text-[var(--muted)] leading-8 mb-10">
+              <p className="max-w-2xl text-sm sm:text-base md:text-lg text-[var(--muted)] leading-7 sm:leading-8 mb-8 sm:mb-10">
                 I&apos;m a CS student who enjoys building software that feels clean, efficient, and technically satisfying. 
                 I prefer structured systems over quick fixes and projects that teach me something new—whether that means solving unusual problems
                 or exploring unfamiliar territory.
@@ -81,7 +81,7 @@ const AboutSection = () => {
       </div>
 
       <Reveal delay={0.5}>
-        <div className="mx-auto mt-20 grid max-w-6xl gap-5 lg:grid-cols-[1.2fr_1fr]">
+        <div className="mx-auto mt-12 sm:mt-20 grid max-w-6xl gap-4 sm:gap-5 lg:grid-cols-[1.2fr_1fr]">
           <AsciiPanel
             eyebrow="About"
             title="Build Philosophy"

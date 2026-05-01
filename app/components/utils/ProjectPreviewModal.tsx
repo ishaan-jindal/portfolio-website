@@ -26,7 +26,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
 
   return createPortal(
     <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(8,10,14,0.86)] px-4 font-sans"
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-[rgba(8,10,14,0.86)] px-0 sm:px-4 font-sans"
       initial={prefersReducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={prefersReducedMotion ? undefined : { opacity: 0 }}
@@ -34,7 +34,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
     >
       <motion.article
         onClick={(e) => e.stopPropagation()}
-        className="ascii-panel max-w-3xl w-full max-h-[88vh] overflow-y-auto scrollbar-hide"
+        className="ascii-panel max-w-3xl w-full max-h-[92vh] sm:max-h-[88vh] overflow-y-auto scrollbar-hide rounded-t-2xl sm:rounded-lg"
         initial={prefersReducedMotion ? false : { y: 18, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={prefersReducedMotion ? undefined : { y: 18, opacity: 0 }}
@@ -43,7 +43,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
         <div className="flex items-start justify-between gap-6">
           <div>
             <p className="font-mono text-sm text-[var(--accent)]">{project.asciiLabel}</p>
-            <h3 className="mt-2 text-3xl font-semibold text-[var(--foreground)]">
+            <h3 className="mt-2 text-2xl sm:text-3xl font-semibold text-[var(--foreground)]">
               {project.title}
             </h3>
             <p className="mt-2 font-mono text-sm text-[var(--muted)]">

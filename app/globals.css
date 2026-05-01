@@ -221,8 +221,19 @@ h6 {
   }
 
   .text-project-card {
-    min-height: 330px;
+    min-height: 280px;
     padding: 1rem;
+  }
+
+  .text-button {
+    min-height: 2.75rem;
+    padding: 0.72rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .text-input {
+    padding: 0.85rem 0.85rem;
+    font-size: 16px; /* prevents iOS zoom on focus */
   }
 }
 

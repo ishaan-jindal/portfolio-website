@@ -45,13 +45,13 @@ const ContactSection = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 font-sans py-20">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 font-sans py-12 sm:py-20">
       <Reveal delay={0.1}>
-        <div className="max-w-2xl mb-12">
+        <div className="max-w-2xl mx-auto text-center mb-12">
           <p className="font-mono text-sm text-[var(--accent)] mb-3">
             Contact
           </p>
-          <h2 className="text-3xl md:text-5xl font-semibold text-[var(--foreground)] mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-semibold text-[var(--foreground)] mb-3 sm:mb-4">
             Open for Interesting Work
           </h2>
           <p className="text-base leading-7 text-[var(--muted)]">
@@ -61,7 +61,7 @@ const ContactSection = () => {
       </Reveal>
 
       <Reveal delay={0.2}>
-        <form onSubmit={handleSubmit} className="ascii-panel w-full max-w-2xl">
+        <form onSubmit={handleSubmit} className="ascii-panel w-full max-w-2xl mx-auto">
           <div className="space-y-5 mb-8">
             <label className="block">
               <span className="form-label">Name</span>
@@ -121,7 +121,7 @@ const ContactSection = () => {
       </Reveal>
 
       <Reveal delay={0.3}>
-        <div className="mt-10 flex flex-wrap gap-6 text-sm font-mono text-[var(--muted)]">
+        <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm font-mono text-[var(--muted)]">
           <a
             href="https://github.com/ishaan-jindal"
             target="_blank"
