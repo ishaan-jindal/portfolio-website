@@ -135,6 +135,13 @@ const ContactSection = () => {
           >
             Email
           </a>
+          <a
+            href="https://linkedin.com/in/jindal-ishaan"
+            target="_blank"
+            className="hover:text-[var(--foreground)] transition-colors"
+          >
+            LinkedIn
+          </a>
         </div>
       </Reveal>
     </div>

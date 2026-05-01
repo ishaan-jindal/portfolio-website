@@ -16,13 +16,13 @@ const ProjectsSection = () => {
         <Reveal delay={0.1}>
           <div className="mb-12 max-w-3xl">
             <p className="font-mono text-sm text-[var(--accent)] mb-3">
-              Selected work
+              Projects
             </p>
             <h2 className="text-2xl sm:text-3xl md:text-5xl font-semibold text-[var(--foreground)] mb-3 sm:mb-4">
-              Projects built for understanding, not just shipping
+              Experiments disguised as projects
             </h2>
             <p className="text-base leading-7 text-[var(--muted)]">
-             A collection of systems, experiments, and tools—built with attention to structure, tradeoffs, and long-term thinking.
+              Projects that prioritize curiosity, iteration, and understanding over polish
             </p>
           </div>
         </Reveal>
