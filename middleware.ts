@@ -31,7 +31,12 @@ export function middleware(req: NextRequest) {
       url.pathname = apiRoute;
       return NextResponse.rewrite(url);
     }
-    return NextResponse.next();
+    // Unknown CLI path → terminal-friendly 404
+    const url = req.nextUrl.clone();
+    url.pathname = "/api/cli/404";
+    const response = NextResponse.rewrite(url);
+    response.headers.set("x-cli-path", pathname);
+    return response;
   }
 
   // Browser clients → redirect known section paths to /#section
