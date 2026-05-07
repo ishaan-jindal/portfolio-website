@@ -27,7 +27,8 @@ export const projects: Project[] = [
       "Backend-backed state and authentication",
     ],
     imageUrl: "wedroid.png",
-    githubLink: "https://github.com/ishaan-jindal/wedroid",
+    githubLink: "https://github.com/Android-Club-VITC/WeDroid",
+    liveLink: "https://wedroid.sacred99.online/"
   },
 
   {
