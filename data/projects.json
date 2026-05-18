@@ -1,9 +1,9 @@
 [
   {
-    "id": "code-executor",
-    "title": "Code-Executor",
+    "id": "runnix",
+    "title": "Runnix",
     "shortTitle": "Sandboxed execution",
-    "asciiLabel": "[CE]",
+    "asciiLabel": "[RX]",
     "description": "Secure, isolated code execution service with JWT authentication, user-based rate limiting, Docker + gVisor sandbox, and comprehensive monitoring.",
     "stack": [
       "Node.js",
@@ -19,6 +19,30 @@
     ],
     "githubLink": "https://github.com/ishaan-jindal/runnix",
     "liveLink": "https://runnix.xyz"
+  },
+  {
+    "title": "Termchat",
+    "shortTitle": "Anonymous terminal chatrooms",
+    "asciiLabel": "[TC]",
+    "description": "Minimal anonymous terminal chatrooms built for quick collaboration, debugging sessions, pair programming, temporary communities, and realtime internet-native communication directly from the terminal. No signup, no browser tabs, just one command to create or join a room instantly.",
+    "stack": [
+      "Go",
+      "TUI",
+      "Docker",
+      "GHCR",
+      "WebSockets",
+      "Caddy"
+    ],
+    "highlights": [
+      "Anonymous ephemeral chat rooms",
+      "Zero account creation",
+      "Modern terminal-native UI",
+      "Linux/macOS/Windows/Termux compatible",
+      "GitHub Releases binary delivery"
+    ],
+    "githubLink": "https://github.com/ishaan-jindal/termchat",
+    "liveLink": "",
+    "id": "termchat"
   },
   {
     "id": "swift-write",
