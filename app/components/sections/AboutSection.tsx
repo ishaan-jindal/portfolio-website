@@ -5,11 +5,11 @@ import AsciiPanel from "../utils/AsciiPanel";
 const skillGroups = [
   {
     title: "Languages",
-    items: ["Dart", "TypeScript", "JavaScript", "Kotlin", "Java", "C/C++"],
+    items: ["Dart", "TypeScript", "Go", "JavaScript", "Kotlin", "Java", "C/C++"],
   },
   {
     title: "Build Stack",
-    items: ["Flutter", "GetX", "Firebase", "Supabase", "Hive", "Node.js", "Next.js"],
+    items: ["Flutter", "BLoC", "Firebase", "Supabase", "Hive", "Node.js", "Next.js"],
   },
   {
     title: "Systems / Workflow",
@@ -53,7 +53,7 @@ const AboutSection = () => {
                 Flutter-first developer focused on clean architecture, system design, and experimental builds.
               </p>
               <p className="max-w-2xl text-sm sm:text-base md:text-lg text-[var(--muted)] leading-7 sm:leading-8 mb-8 sm:mb-10">
-                I&apos;m a CS student who enjoys building software that feels clean, efficient, and technically satisfying. 
+                I&apos;m a CS student who enjoys building software that feels clean, efficient, and technically satisfying.
                 I prefer structured systems over quick fixes and projects that teach me something new—whether that means solving unusual problems
                 or exploring unfamiliar territory.
               </p>

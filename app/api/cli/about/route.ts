@@ -3,9 +3,9 @@ import { banner, heading, accent, muted, label, bullet, divider, nav, c } from "
 
 export function GET(req: NextRequest) {
   const skills = [
-    { group: "Languages",  items: "Dart · TypeScript · JavaScript · Kotlin · Java · C/C++" },
-    { group: "Build Stack", items: "Flutter · GetX · Firebase · Supabase · Hive · Node.js · Next.js" },
-    { group: "Systems",     items: "Clean Architecture · Offline-first · Docker · Linux · Redis · Prometheus" },
+    { group: "Languages", items: "Dart · TypeScript · Go · JavaScript · Kotlin · Java · C/C++" },
+    { group: "Build Stack", items: "Flutter · BLoC · Firebase · Supabase · Hive · Node.js · Next.js" },
+    { group: "Systems", items: "Clean Architecture · Offline-first · Docker · Linux · Redis · Prometheus" },
   ];
 
   const body = [
