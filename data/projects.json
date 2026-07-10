@@ -41,8 +41,29 @@
       "GitHub Releases binary delivery"
     ],
     "githubLink": "https://github.com/ishaan-jindal/termchat",
-    "liveLink": "",
+    "liveLink": "https://termchat.sacred99.online",
     "id": "termchat"
+  },
+  {
+    "id": "termchat-mobile",
+    "title": "Termchat Mobile",
+    "shortTitle": "Anonymous chatrooms on mobile",
+    "asciiLabel": "[TM]",
+    "description": "Mobile companion for termchat — join anonymous terminal chatrooms seamlessly from your phone. Currently in closed beta on Google Play.",
+    "stack": [
+      "Flutter",
+      "Dart",
+      "WebSockets"
+    ],
+    "highlights": [
+      "Seamless termchat integration",
+      "Anonymous ephemeral chat",
+      "Cross-platform mobile client",
+      "Google Play closed beta"
+    ],
+    "githubLink": "https://github.com/ishaan-jindal/termchat-mobile",
+    "liveLink": "https://play.google.com/store/apps/details?id=tech.ishaanjindal.termchat",
+    "testerLink": "https://groups.google.com/g/termchat-testers/"
   },
   {
     "id": "swift-write",
@@ -91,10 +112,11 @@
     "asciiLabel": "[SC]",
     "description": "A browser-facing experiment that extracts a page's styling, mutates it into a stranger design language, and shows the transformed result.",
     "stack": [
-      "Next.js",
-      "TypeScript",
-      "CSS parsing",
-      "Vercel"
+      "Node.js",
+      "Express",
+      "Puppeteer",
+      "MongoDB",
+      "JavaScript"
     ],
     "highlights": [
       "Fetches and transforms remote stylesheets",

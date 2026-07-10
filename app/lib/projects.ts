@@ -11,6 +11,7 @@ export type Project = {
   highlights: string[];
   githubLink?: string;
   liveLink?: string;
+  testerLink?: string;
 };
 
 /**

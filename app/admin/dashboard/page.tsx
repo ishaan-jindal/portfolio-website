@@ -15,6 +15,7 @@ const EMPTY_PROJECT: ProjectFormData = {
   highlights: [],
   githubLink: "",
   liveLink: "",
+  testerLink: "",
 };
 
 export default function AdminDashboardPage() {
@@ -566,6 +567,22 @@ export default function AdminDashboardPage() {
                       setFormData({ ...formData, liveLink: e.target.value })
                     }
                     placeholder="https://..."
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="proj-tester" className="form-label">
+                    Tester Link
+                  </label>
+                  <input
+                    id="proj-tester"
+                    type="url"
+                    className="text-input"
+                    value={formData.testerLink || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, testerLink: e.target.value })
+                    }
+                    placeholder="https://groups.google.com/..."
                   />
                 </div>
               </div>

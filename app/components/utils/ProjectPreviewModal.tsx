@@ -106,6 +106,11 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
               Live Demo
             </a>
           )}
+          {project.testerLink && (
+            <a href={project.testerLink} target="_blank" className="text-button">
+              Become a Tester
+            </a>
+          )}
         </div>
       </motion.article>
     </motion.div>,
