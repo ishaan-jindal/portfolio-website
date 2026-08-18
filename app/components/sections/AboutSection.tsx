@@ -68,6 +68,13 @@ const AboutSection = () => {
                   Contact
                 </a>
                 <a
+                  href="/resume.pdf"
+                  download="Ishaan-Jindal-Resume.pdf"
+                  className="text-button"
+                >
+                  Download Resume
+                </a>
+                <a
                   href="https://github.com/ishaan-jindal"
                   target="_blank"
                   className="font-mono text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
