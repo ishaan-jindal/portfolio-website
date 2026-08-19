@@ -5,15 +5,27 @@ import AsciiPanel from "../utils/AsciiPanel";
 const skillGroups = [
   {
     title: "Languages",
-    items: ["Dart", "TypeScript", "Go", "JavaScript", "Kotlin", "Java", "C/C++"],
+    items: ["Go", "TypeScript", "Python", "C/C++", "Dart", "Bash"],
   },
   {
-    title: "Build Stack",
-    items: ["Flutter", "BLoC", "Firebase", "Supabase", "Hive", "Node.js", "Next.js"],
+    title: "Cloud & Containers",
+    items: ["AWS (EC2)", "Oracle Cloud", "GCP", "Docker", "Kubernetes", "gVisor", "Incus"],
   },
   {
-    title: "Systems / Workflow",
-    items: ["Clean Architecture", "Offline-first", "Docker", "Linux", "Neovim", "Arch", "Hyprland"],
+    title: "CI/CD & IaC",
+    items: ["GitHub Actions", "Terraform"],
+  },
+  {
+    title: "Observability",
+    items: ["Prometheus", "Grafana", "Redis"],
+  },
+  {
+    title: "Web / Backend",
+    items: ["Node.js", "REST APIs", "Nginx"],
+  },
+  {
+    title: "Databases",
+    items: ["PostgreSQL", "MongoDB", "Firebase"],
   },
 ];
 
@@ -50,12 +62,12 @@ const AboutSection = () => {
 
             <Reveal delay={0.3}>
               <p className="max-w-2xl text-lg sm:text-xl md:text-2xl text-[var(--soft)] leading-7 sm:leading-9 mb-4 sm:mb-5">
-                Flutter-first developer focused on clean architecture, system design, and experimental builds.
+                Infrastructure &amp; DevOps engineer focused on container orchestration, deployment automation, and production observability.
               </p>
               <p className="max-w-2xl text-sm sm:text-base md:text-lg text-[var(--muted)] leading-7 sm:leading-8 mb-8 sm:mb-10">
-                I&apos;m a CS student who enjoys building software that feels clean, efficient, and technically satisfying.
-                I prefer structured systems over quick fixes and projects that teach me something new—whether that means solving unusual problems
-                or exploring unfamiliar territory.
+                CS student at VIT Chennai building systems that scale reliably and operate transparently under load —
+                from sandboxed code execution engines to terminal-native services. Google Cloud certified (ACE), open-source
+                contributor, and technical lead for a 100+ member club.
               </p>
             </Reveal>
 
@@ -92,7 +104,7 @@ const AboutSection = () => {
           <AsciiPanel
             eyebrow="About"
             title="Build Philosophy"
-            text="I like building things that feel clean, minimal, and technically interesting. I’m drawn to structured systems, thoughtful design, and projects that let me explore how things work beneath the surface. I enjoy experimental ideas, solving unusual problems, and creating tools that feel simple, efficient, and intentional rather than overly complex or flashy."
+            text="I build systems that scale reliably and operate transparently under load — container orchestration, deployment automation, and production observability. I care about structured systems, reproducible deploys, and tools that stay simple, efficient, and intentional rather than overly complex or flashy."
           />
 
           <div className="ascii-panel">

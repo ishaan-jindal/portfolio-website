@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Ishaan Jindal — Developer",
     short_name: "Ishaan Jindal",
     description:
-      "Portfolio of Ishaan Jindal, a Flutter-focused developer interested in clean interfaces, unusual ideas, and system-level problem solving.",
+      "Infrastructure and DevOps engineer focused on container orchestration, deployment automation, and production observability.",
     start_url: "/",
     display: "standalone",
     background_color: "#0b0d10",

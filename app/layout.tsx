@@ -18,12 +18,12 @@ export const viewport: Viewport = {
 };
 
 const siteDescription =
-  "Portfolio of Ishaan Jindal, a Flutter-focused developer interested in clean interfaces, unusual ideas, and system-level problem solving.";
+  "Infrastructure and DevOps engineer focused on container orchestration, deployment automation, and production observability. Building systems that scale reliably and operate transparently under load.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ishaanjindal.tech"),
   title: {
-    default: "Ishaan Jindal — Developer",
+    default: "Ishaan Jindal — Infrastructure & DevOps Engineer",
     template: "%s — Ishaan Jindal",
   },
   description: siteDescription,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Ishaan Jindal — Developer",
+    title: "Ishaan Jindal — Infrastructure & DevOps Engineer",
     description: siteDescription,
     url: "https://ishaanjindal.tech",
     siteName: "Ishaan Jindal",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ishaan Jindal — Developer",
+    title: "Ishaan Jindal — Infrastructure & DevOps Engineer",
     description: siteDescription,
     images: ["/og.png"],
   },
@@ -59,7 +59,7 @@ const personSchema = {
   "@type": "Person",
   name: "Ishaan Jindal",
   url: "https://ishaanjindal.tech",
-  jobTitle: "Software Developer",
+  jobTitle: "Infrastructure & DevOps Engineer",
   description: siteDescription,
   email: "mailto:ishaanjindal2006@gmail.com",
   sameAs: [
