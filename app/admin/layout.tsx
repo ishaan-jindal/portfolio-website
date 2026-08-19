@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// CSP nonces require dynamic rendering so Next can inject them per-request
+export const dynamic = "force-dynamic";
+
 export default function AdminLayout({
   children,
 }: {

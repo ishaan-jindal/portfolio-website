@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   },
 };
 
+// CSP nonces require dynamic rendering so Next can inject them per-request
+export const dynamic = "force-dynamic";
+
 export default function ResumePage() {
   return (
     <main className="h-screen pt-14 px-4 pb-4">

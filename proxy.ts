@@ -24,8 +24,8 @@ const JWT_SECRET = process.env.JWT_SECRET
   ? new TextEncoder().encode(process.env.JWT_SECRET)
   : null;
 
-function withSecurityHeaders(response: NextResponse, nonce: string) {
-  const csp = [
+function buildCsp(nonce: string): string {
+  return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${
       process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
@@ -40,14 +40,21 @@ function withSecurityHeaders(response: NextResponse, nonce: string) {
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
   ].join("; ");
+}
+
+function withSecurityHeaders(response: NextResponse, csp: string) {
   response.headers.set("Content-Security-Policy", csp);
   return response;
 }
 
 export async function proxy(req: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const csp = buildCsp(nonce);
+  // CSP must be present on the REQUEST headers — Next.js reads it during
+  // rendering to extract the nonce and attach it to inline scripts/styles.
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
 
   const ua = req.headers.get("user-agent") ?? "";
   const isCLI = /curl|wget|httpie|fetch|powershell/i.test(ua);
@@ -61,7 +68,7 @@ export async function proxy(req: NextRequest) {
       url.pathname = apiRoute;
       return withSecurityHeaders(
         NextResponse.rewrite(url, { request: { headers: requestHeaders } }),
-        nonce
+        csp
       );
     }
   }
@@ -85,7 +92,7 @@ export async function proxy(req: NextRequest) {
 
     return withSecurityHeaders(
       NextResponse.next({ request: { headers: requestHeaders } }),
-      nonce
+      csp
     );
   }
 
@@ -93,7 +100,7 @@ export async function proxy(req: NextRequest) {
   if (pathname === "/admin") {
     return withSecurityHeaders(
       NextResponse.next({ request: { headers: requestHeaders } }),
-      nonce
+      csp
     );
   }
 
@@ -115,7 +122,7 @@ export async function proxy(req: NextRequest) {
 
   return withSecurityHeaders(
     NextResponse.next({ request: { headers: requestHeaders } }),
-    nonce
+    csp
   );
 }
 

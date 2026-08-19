@@ -4,6 +4,9 @@ import ContactSection from './components/sections/ContactSection';
 import Footer from './components/layout/Footer';
 import { getProjects } from './lib/projects';
 
+// CSP nonces require dynamic rendering so Next can inject them per-request
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   const projects = getProjects();
 
