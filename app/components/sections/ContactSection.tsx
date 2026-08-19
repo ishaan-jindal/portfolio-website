@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import emailjs from "@emailjs/browser";
 import Reveal from "../utils/Reveal";
 
 type Status = "idle" | "sending" | "success" | "error";
@@ -12,6 +11,7 @@ const ContactSection = () => {
     name: "",
     email: "",
     message: "",
+    website: "",
   });
 
   const handleChange = (
@@ -27,15 +27,16 @@ const ContactSection = () => {
     setStatus("sending");
 
     try {
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        formData,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error(`Contact request failed: ${res.status}`);
 
       setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
+      setFormData({ name: "", email: "", message: "", website: "" });
       setTimeout(() => setStatus("idle"), 5000);
     } catch (err) {
       console.error(err);
@@ -62,6 +63,16 @@ const ContactSection = () => {
 
       <Reveal delay={0.2}>
         <form onSubmit={handleSubmit} className="ascii-panel w-full max-w-2xl mx-auto">
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+          />
           <div className="space-y-5 mb-8">
             <label className="block">
               <span className="form-label">Name</span>

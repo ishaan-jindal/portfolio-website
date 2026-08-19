@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPassword, createSession, destroySession } from "@/app/lib/auth";
+import { rateLimit } from "@/app/lib/rate-limit";
+
+const LOGIN_LIMIT = { name: "admin-login", windowMs: 15 * 60 * 1000, max: 5 };
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +14,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    // Login
+    // Login — brute-force protection
+    const limited = rateLimit(req, LOGIN_LIMIT);
+    if (!limited.allowed) {
+      return NextResponse.json(
+        { error: "Too many attempts. Try again later." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(limited.retryAfterSeconds) },
+        }
+      );
+    }
+
     if (!password) {
       return NextResponse.json(
         { error: "Password required" },

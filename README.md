@@ -19,10 +19,10 @@ curl ishaanjindal.tech              # home — banner + bio + links
 curl ishaanjindal.tech/about        # about — skills, philosophy
 curl ishaanjindal.tech/projects     # projects — full project list
 curl ishaanjindal.tech/contact      # contact — reach out
-curl ishaanjindal.tech/anything     # 404 — friendly not-found page
+curl ishaanjindal.tech/anything     # unknown paths redirect to home
 ```
 
-Browsers hitting `/about`, `/projects`, or `/contact` are redirected to the corresponding section on the SPA. Any other unknown path redirects to `/`.
+Browsers hitting `/about`, `/projects`, or `/contact` are redirected to the corresponding section on the SPA. Any other unknown path (browser or terminal) redirects to `/`.
 
 ---
 
@@ -41,10 +41,11 @@ Browsers hitting `/about`, `/projects`, or `/contact` are redirected to the corr
 
 - **About** — hero section with ASCII portrait, typing animation, tech-stack skills grid, and social links
 - **Projects** — project cards with expanding preview modal and detailed breakdowns
-- **Contact** — centered EmailJS-powered contact form with GitHub, Email, and LinkedIn links
+- **Contact** — server-side EmailJS proxy with honeypot + IP rate limiting
 - **Resume** — downloadable PDF served from `/resume`
 - **CLI Mode** — full terminal portfolio via `curl` with ANSI colors, figlet banner, and per-page navigation
-- **Smart Routing** — middleware-based UA detection, browser redirects for clean URLs, terminal-friendly 404s
+- **Smart Routing** — middleware-based UA detection and browser redirects for clean URLs
+- **Security** — CSP with per-request nonces, security headers, rate-limited admin login
 
 ## Getting Started
 
@@ -59,6 +60,7 @@ Other commands:
 npm run build      # production build (Turbopack)
 npm run start      # serve the production build
 npm run lint       # run ESLint
+npm run typecheck  # TypeScript type check
 ```
 
 ## Environment Variables
@@ -71,6 +73,16 @@ NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
 NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
 ```
 
+For the admin panel (`/admin`), also set these — `JWT_SECRET` is required and has **no fallback**:
+
+```env
+ADMIN_PASSWORD_HASH=sha256_of_your_admin_password
+JWT_SECRET=long_random_string
+GITHUB_TOKEN=github_personal_access_token
+```
+
+> Note: rate limiting is in-memory (per serverless instance), so it protects against casual spam and brute force but not distributed abuse.
+
 ## Project Structure
 
 ```
@@ -81,8 +93,7 @@ app/
 │       ├── route.ts        # GET / — home banner
 │       ├── about/route.ts  # GET /about — skills & philosophy
 │       ├── projects/route.ts # GET /projects — project details
-│       ├── contact/route.ts  # GET /contact — contact info
-│       └── 404/route.ts    # GET (catch-all) — terminal 404
+│       └── contact/route.ts  # GET /contact — contact info
 ├── components/
 │   ├── layout/            # Header (mobile hamburger menu), Footer
 │   ├── sections/          # AboutSection, ProjectsSection, ContactSection

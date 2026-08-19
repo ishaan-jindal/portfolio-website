@@ -1,9 +1,10 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "dev-fallback-secret-change-me"
-);
+// Fail closed: no JWT_SECRET → sessions cannot be created or verified
+const JWT_SECRET = process.env.JWT_SECRET
+  ? new TextEncoder().encode(process.env.JWT_SECRET)
+  : null;
 
 const COOKIE_NAME = "admin_token";
 const EXPIRY = "24h";
@@ -12,6 +13,9 @@ const EXPIRY = "24h";
  * Create a signed JWT and set it as an httpOnly cookie.
  */
 export async function createSession(): Promise<string> {
+  if (!JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable is required");
+  }
   const token = await new SignJWT({ role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -38,7 +42,7 @@ export async function verifySession(): Promise<boolean> {
   try {
     const jar = await cookies();
     const token = jar.get(COOKIE_NAME)?.value;
-    if (!token) return false;
+    if (!token || !JWT_SECRET) return false;
 
     await jwtVerify(token, JWT_SECRET);
     return true;

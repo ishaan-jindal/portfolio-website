@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Resume — Ishaan Jindal",
+  title: "Resume",
   description: "View Ishaan Jindal's resume.",
+  alternates: {
+    canonical: "/resume",
+  },
 };
 
 export default function ResumePage() {

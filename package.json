@@ -6,11 +6,11 @@
     "build": "next build --turbopack",
     "dev": "next dev --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.6",
-    "@emailjs/browser": "^4.4.1",
     "framer-motion": "^12.26.2",
     "jose": "^6.2.3",
     "next": "^16.1.1",

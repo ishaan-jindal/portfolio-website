@@ -19,7 +19,10 @@ export async function GET() {
   try {
     const { content, sha } = await fetchProjectsFromGitHub();
     const projects: Project[] = JSON.parse(content);
-    return NextResponse.json({ projects, sha });
+    return NextResponse.json(
+      { projects, sha },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (ghErr: unknown) {
     // GitHub fetch failed — fall back to local file
     // This happens when the file hasn't been pushed yet
@@ -30,12 +33,15 @@ export async function GET() {
 
     try {
       const projects = getProjects();
-      return NextResponse.json({
-        projects,
-        sha: null,
-        warning:
-          "Loaded from local file — push data/projects.json to GitHub to enable live editing",
-      });
+      return NextResponse.json(
+        {
+          projects,
+          sha: null,
+          warning:
+            "Loaded from local file — push data/projects.json to GitHub to enable live editing",
+        },
+        { headers: { "Cache-Control": "no-store" } }
+      );
     } catch (localErr: unknown) {
       const message =
         localErr instanceof Error ? localErr.message : "Unknown error";
@@ -93,7 +99,10 @@ export async function PUT(req: NextRequest) {
       message
     );
 
-    return NextResponse.json({ success: true, commitUrl });
+    return NextResponse.json(
+      { success: true, commitUrl },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

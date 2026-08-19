@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -86,9 +87,9 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="admin-login-footer">
-          <a href="/" className="admin-login-back-link">
+          <Link href="/" className="admin-login-back-link">
             ← back to site
-          </a>
+          </Link>
         </p>
       </div>
     </div>

@@ -19,11 +19,36 @@ const BROWSER_REDIRECTS: Record<string, string> = {
 // Known routes that should NOT be redirected
 const KNOWN_ROUTES = new Set(["/", "/resume", "/admin", "/admin/dashboard"]);
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "dev-fallback-secret-change-me"
-);
+// Fail closed: no JWT_SECRET → admin dashboard access is denied
+const JWT_SECRET = process.env.JWT_SECRET
+  ? new TextEncoder().encode(process.env.JWT_SECRET)
+  : null;
 
-export async function middleware(req: NextRequest) {
+function withSecurityHeaders(response: NextResponse, nonce: string) {
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${
+      process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
+    }`,
+    `style-src 'self' 'nonce-${nonce}' 'unsafe-inline'`,
+    "img-src 'self' data: blob:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+  ].join("; ");
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
+export async function proxy(req: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-nonce", nonce);
+
   const ua = req.headers.get("user-agent") ?? "";
   const isCLI = /curl|wget|httpie|fetch|powershell/i.test(ua);
   const pathname = req.nextUrl.pathname;
@@ -34,20 +59,17 @@ export async function middleware(req: NextRequest) {
     if (apiRoute) {
       const url = req.nextUrl.clone();
       url.pathname = apiRoute;
-      return NextResponse.rewrite(url);
+      return withSecurityHeaders(
+        NextResponse.rewrite(url, { request: { headers: requestHeaders } }),
+        nonce
+      );
     }
-    // Unknown CLI path → terminal-friendly 404
-    const url = req.nextUrl.clone();
-    url.pathname = "/api/cli/404";
-    const response = NextResponse.rewrite(url);
-    response.headers.set("x-cli-path", pathname);
-    return response;
   }
 
   // Admin dashboard — require JWT authentication
   if (pathname === "/admin/dashboard") {
     const token = req.cookies.get("admin_token")?.value;
-    if (!token) {
+    if (!token || !JWT_SECRET) {
       const url = req.nextUrl.clone();
       url.pathname = "/admin";
       return NextResponse.redirect(url);
@@ -61,12 +83,18 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    return NextResponse.next();
+    return withSecurityHeaders(
+      NextResponse.next({ request: { headers: requestHeaders } }),
+      nonce
+    );
   }
 
   // Admin login page — pass through
   if (pathname === "/admin") {
-    return NextResponse.next();
+    return withSecurityHeaders(
+      NextResponse.next({ request: { headers: requestHeaders } }),
+      nonce
+    );
   }
 
   // Browser clients → redirect known section paths to /#section
@@ -78,17 +106,22 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Browser clients → redirect any unknown path to /
+  // Unknown paths → redirect to home (browsers and CLI alike)
   if (!KNOWN_ROUTES.has(pathname)) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url, 308);
   }
 
-  return NextResponse.next();
+  return withSecurityHeaders(
+    NextResponse.next({ request: { headers: requestHeaders } }),
+    nonce
+  );
 }
 
 export const config = {
-  // Match everything except Next internals, static files, and API routes
-  matcher: ["/((?!_next|api|favicon\\.ico|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico|pdf|css|js|woff2?|ttf)).*)"],
+  // Match everything except Next internals, API routes, and static files
+  matcher: [
+    "/((?!_next|api|favicon\\.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico|pdf|css|js|woff2?|ttf)).*)",
+  ],
 };
