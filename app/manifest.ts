@@ -2,14 +2,14 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Ishaan Jindal — Developer",
+    name: "Ishaan Jindal — Software Developer",
     short_name: "Ishaan Jindal",
     description:
-      "Infrastructure and DevOps engineer focused on container orchestration, deployment automation, and production observability.",
+      "Software developer building terminal tools, mobile apps, web experiments, and the infrastructure behind them.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0b0d10",
-    theme_color: "#0b0d10",
+    background_color: "#0a0a0a",
+    theme_color: "#0a0a0a",
     icons: [
       {
         src: "/favicon.ico",

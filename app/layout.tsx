@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter_Tight, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/Header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -14,16 +15,16 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#0b0d10",
+  themeColor: "#0a0a0a",
 };
 
 const siteDescription =
-  "Infrastructure and DevOps engineer focused on container orchestration, deployment automation, and production observability. Building systems that scale reliably and operate transparently under load.";
+  "Software developer building terminal tools, mobile apps, web experiments, and the infrastructure behind them.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ishaanjindal.tech"),
   title: {
-    default: "Ishaan Jindal — Infrastructure & DevOps Engineer",
+    default: "Ishaan Jindal — Software Developer",
     template: "%s — Ishaan Jindal",
   },
   description: siteDescription,
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Ishaan Jindal — Infrastructure & DevOps Engineer",
+    title: "Ishaan Jindal — Software Developer",
     description: siteDescription,
     url: "https://ishaanjindal.tech",
     siteName: "Ishaan Jindal",
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ishaan Jindal — Infrastructure & DevOps Engineer",
+    title: "Ishaan Jindal — Software Developer",
     description: siteDescription,
     images: ["/og.jpg"],
   },
@@ -63,7 +64,7 @@ const personSchema = {
   "@type": "Person",
   name: "Ishaan Jindal",
   url: "https://ishaanjindal.tech",
-  jobTitle: "Infrastructure & DevOps Engineer",
+  jobTitle: "Software Developer",
   description: siteDescription,
   email: "mailto:ishaanjindal2006@gmail.com",
   sameAs: [
@@ -80,15 +81,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative min-h-screen flex flex-col`}
+        className={`${interTight.variable} ${geistMono.variable} antialiased relative min-h-screen flex flex-col`}
       >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
-        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-page-texture" />
-        </div>
 
         <Header />
         <a href="#main-content" className="skip-link">

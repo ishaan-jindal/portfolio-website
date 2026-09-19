@@ -10,6 +10,7 @@ const EMPTY_PROJECT: ProjectFormData = {
   title: "",
   shortTitle: "",
   asciiLabel: "",
+  category: "",
   description: "",
   stack: [],
   highlights: [],
@@ -540,6 +541,22 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
+                  <label htmlFor="proj-category" className="form-label">
+                    Category *
+                  </label>
+                  <input
+                    id="proj-category"
+                    type="text"
+                    className="text-input"
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
+                    placeholder="Developer Tool"
+                  />
+                </div>
+
+                <div>
                   <label htmlFor="proj-id" className="form-label">
                     ID (auto-generated)
                   </label>
@@ -716,7 +733,10 @@ export default function AdminDashboardPage() {
               <button
                 onClick={handleSaveProject}
                 disabled={
-                  !formData.title || !formData.shortTitle || !formData.description
+                  !formData.title ||
+                  !formData.shortTitle ||
+                  !formData.category ||
+                  !formData.description
                 }
                 className="text-button text-button--primary"
               >

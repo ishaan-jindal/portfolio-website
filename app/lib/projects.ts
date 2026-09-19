@@ -6,6 +6,7 @@ export type Project = {
   title: string;
   shortTitle: string;
   asciiLabel: string;
+  category: string;
   description: string;
   stack: string[];
   highlights: string[];

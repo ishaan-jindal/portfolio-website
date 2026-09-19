@@ -55,6 +55,9 @@ function validateProject(p: unknown): string | null {
   if (!isNonEmptyString(r.asciiLabel, 16)) {
     return `project "${r.id}": asciiLabel is required (max 16 chars)`;
   }
+  if (!isNonEmptyString(r.category, 60)) {
+    return `project "${r.id}": category is required (max 60 chars)`;
+  }
   if (!isNonEmptyString(r.description, 2000)) {
     return `project "${r.id}": description is required (max 2000 chars)`;
   }

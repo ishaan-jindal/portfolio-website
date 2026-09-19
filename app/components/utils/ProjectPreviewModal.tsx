@@ -62,7 +62,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
 
   return createPortal(
     <motion.div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-[rgba(8,10,14,0.86)] px-0 sm:px-4 font-sans"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-[rgba(10,10,10,0.9)] sm:items-center sm:px-6"
       initial={prefersReducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={prefersReducedMotion ? undefined : { opacity: 0 }}
@@ -74,7 +74,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
         aria-modal="true"
         aria-labelledby="project-modal-title"
         onClick={(e) => e.stopPropagation()}
-        className="ascii-panel max-w-3xl w-full max-h-[92vh] sm:max-h-[88vh] overflow-y-auto scrollbar-hide rounded-t-2xl sm:rounded-lg"
+        className="scrollbar-hide max-h-[92vh] w-full max-w-3xl overflow-y-auto border border-[var(--border-strong)] bg-[var(--background)] p-6 sm:max-h-[88vh] sm:p-10"
         initial={prefersReducedMotion ? false : { y: 18, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={prefersReducedMotion ? undefined : { y: 18, opacity: 0 }}
@@ -82,77 +82,88 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
       >
         <div className="flex items-start justify-between gap-6">
           <div>
-            <p className="font-mono text-sm text-[var(--accent)]">{project.asciiLabel}</p>
+            <p className="eyebrow text-[var(--accent)]">{project.shortTitle}</p>
             <h3
               id="project-modal-title"
               tabIndex={-1}
               data-autofocus
-              className="mt-2 text-2xl sm:text-3xl font-semibold text-[var(--foreground)]"
+              className="mt-3 text-2xl font-bold uppercase tracking-[-0.02em] text-[var(--foreground)] sm:text-3xl"
             >
               {project.title}
             </h3>
-            <p className="mt-2 font-mono text-sm text-[var(--muted)]">
-              {project.shortTitle}
-            </p>
           </div>
 
           <button
             onClick={onClose}
-            className="font-mono text-xl text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            className="font-mono text-lg leading-none text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
             aria-label="Close project details"
           >
-            x
+            ✕
           </button>
         </div>
 
-        <div className="mt-7 border-t border-[var(--border)] pt-7">
-          <p className="text-base leading-8 text-[var(--muted)]">
+        <div className="mt-8 border-t border-[var(--border)] pt-8">
+          <p className="text-sm leading-7 text-[var(--soft)]">
             {project.description}
           </p>
 
-          <div className="mt-7">
-            <h4 className="font-mono text-sm text-[var(--foreground)] mb-3">
-              Highlights
-            </h4>
-            <ul className="space-y-3">
+          <div className="mt-8">
+            <h4 className="eyebrow text-[var(--foreground)]">Highlights</h4>
+            <ul className="mt-4">
               {project.highlights.map((highlight) => (
                 <li
                   key={highlight}
-                  className="font-mono text-sm leading-6 text-[var(--muted)]"
+                  className="flex gap-3 border-b border-[var(--border)] py-3 font-mono text-xs leading-6 text-[var(--muted)] last:border-b-0"
                 >
-                  <span className="text-[var(--accent)]" aria-hidden="true">- </span>
+                  <span className="text-[var(--accent)]" aria-hidden="true">
+                    —
+                  </span>
                   {highlight}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="mt-7 flex flex-wrap gap-2">
-            {project.stack.map((item) => (
-              <span key={item} className="text-chip">
-                {item}
-              </span>
-            ))}
+          <div className="mt-8">
+            <h4 className="eyebrow text-[var(--foreground)]">Stack</h4>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.stack.map((item) => (
+                <span key={item} className="text-chip">
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="mt-9 flex flex-wrap gap-3">
           {project.githubLink && (
             <a
               href={project.githubLink}
               target="_blank"
+              rel="noopener noreferrer"
               className="text-button text-button--primary"
             >
               View Source
             </a>
           )}
           {project.liveLink && (
-            <a href={project.liveLink} target="_blank" className="text-button">
+            <a
+              href={project.liveLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-button"
+            >
               Live Demo
             </a>
           )}
           {project.testerLink && (
-            <a href={project.testerLink} target="_blank" className="text-button">
+            <a
+              href={project.testerLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-button"
+            >
               Become a Tester
             </a>
           )}

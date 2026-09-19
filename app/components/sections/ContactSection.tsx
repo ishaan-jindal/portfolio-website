@@ -1,160 +1,73 @@
-"use client";
-
-import { useState } from "react";
-import Reveal from "../utils/Reveal";
-
-type Status = "idle" | "sending" | "success" | "error";
+const links = [
+  {
+    label: "GitHub",
+    handle: "github.com/ishaan-jindal",
+    href: "https://github.com/ishaan-jindal",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+      </svg>
+    ),
+  },
+  {
+    label: "LinkedIn",
+    handle: "linkedin.com/in/jindal-ishaan",
+    href: "https://linkedin.com/in/jindal-ishaan",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M14.82 0H1.18C.53 0 0 .52 0 1.17v13.66C0 15.48.53 16 1.18 16h13.64c.65 0 1.18-.52 1.18-1.17V1.17C16 .52 15.47 0 14.82 0ZM4.74 13.63H2.38V6h2.36v7.63ZM3.56 4.98a1.37 1.37 0 1 1 0-2.74 1.37 1.37 0 0 1 0 2.74Zm10.07 8.65h-2.36V9.92c0-.88-.02-2.02-1.23-2.02-1.23 0-1.42.96-1.42 1.95v3.78H6.26V6h2.27v1.04h.03c.32-.6 1.09-1.23 2.24-1.23 2.4 0 2.84 1.58 2.84 3.63v4.19Z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Email",
+    handle: "ishaanjindal2006@gmail.com",
+    href: "mailto:ishaanjindal2006@gmail.com",
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        aria-hidden="true"
+      >
+        <rect x="0.75" y="2.75" width="14.5" height="10.5" />
+        <path d="m1 3.5 7 5.5 7-5.5" />
+      </svg>
+    ),
+  },
+];
 
 const ContactSection = () => {
-  const [status, setStatus] = useState<Status>("idle");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-    website: "",
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (status !== "idle") return;
-
-    setStatus("sending");
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) throw new Error(`Contact request failed: ${res.status}`);
-
-      setStatus("success");
-      setFormData({ name: "", email: "", message: "", website: "" });
-      setTimeout(() => setStatus("idle"), 5000);
-    } catch (err) {
-      console.error(err);
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 5000);
-    }
-  };
-
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 font-sans py-12 sm:py-20">
-      <Reveal delay={0.1}>
-        <div className="max-w-2xl mx-auto text-center mb-12">
-          <p className="font-mono text-sm text-[var(--accent)] mb-3">
-            Contact
-          </p>
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-semibold text-[var(--foreground)] mb-3 sm:mb-4">
-            Open for Interesting Work
-          </h2>
-          <p className="text-base leading-7 text-[var(--muted)]">
-            I&apos;m open to internships, collaborations, and projects where thoughtful engineering matters.
-          </p>
-        </div>
-      </Reveal>
+    <div>
+      <p className="eyebrow">
+        <span className="text-[var(--accent)]">04</span> / 04
+      </p>
+      <h2 className="section-title mt-4">Get in touch</h2>
+      <p className="mt-5 max-w-[34ch] text-sm leading-6 text-[var(--muted)]">
+        Open to internships, collaborations, and interesting projects. Reach me
+        directly — no forms, no spam folders.
+      </p>
 
-      <Reveal delay={0.2}>
-        <form onSubmit={handleSubmit} className="ascii-panel w-full max-w-2xl mx-auto">
-          <input
-            type="text"
-            name="website"
-            value={formData.website}
-            onChange={handleChange}
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-            className="hidden"
-          />
-          <div className="space-y-5 mb-8">
-            <label className="block">
-              <span className="form-label">Name</span>
-              <input
-                name="name"
-                required
-                placeholder="Your name"
-                value={formData.name}
-                onChange={handleChange}
-                className="text-input"
-              />
-            </label>
-
-            <label className="block">
-              <span className="form-label">Email</span>
-              <input
-                name="email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                className="text-input"
-              />
-            </label>
-
-            <label className="block">
-              <span className="form-label">Message</span>
-              <textarea
-                name="message"
-                required
-                placeholder="What would you like to build or discuss?"
-                rows={5}
-                value={formData.message}
-                onChange={handleChange}
-                className="text-input resize-none"
-              />
-            </label>
-          </div>
-
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="min-h-6 text-sm font-mono" role="status" aria-live="polite">
-              {status === "idle" && <span className="text-[var(--muted)]">Ready when you are.</span>}
-              {status === "sending" && <span className="text-[var(--accent-2)]">Sending your message...</span>}
-              {status === "success" && <span className="text-[var(--accent-2)]">Message sent. Thank you.</span>}
-              {status === "error" && <span className="text-[var(--accent)]">Something went wrong. Please try email instead.</span>}
-            </div>
-
-            <button
-              disabled={status === "sending"}
-              className="text-button text-button--primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+      <ul className="mt-9 flex flex-col gap-5">
+        {links.map((link) => (
+          <li key={link.label}>
+            <a
+              href={link.href}
+              {...(link.href.startsWith("mailto:")
+                ? {}
+                : { target: "_blank", rel: "noopener noreferrer" })}
+              className="contact-link"
             >
-              Send Message
-            </button>
-          </div>
-        </form>
-      </Reveal>
-
-      <Reveal delay={0.3}>
-        <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm font-mono text-[var(--muted)]">
-          <a
-            href="https://github.com/ishaan-jindal"
-            target="_blank"
-            className="hover:text-[var(--foreground)] transition-colors"
-          >
-            GitHub
-          </a>
-          <a
-            href="mailto:ishaanjindal2006@gmail.com"
-            className="hover:text-[var(--foreground)] transition-colors"
-          >
-            Email
-          </a>
-          <a
-            href="https://linkedin.com/in/jindal-ishaan"
-            target="_blank"
-            className="hover:text-[var(--foreground)] transition-colors"
-          >
-            LinkedIn
-          </a>
-        </div>
-      </Reveal>
+              {link.icon}
+              <span>{link.handle}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

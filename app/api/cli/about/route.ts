@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isTerminalClient } from "@/app/lib/is-cli";
+import { getSkills } from "@/app/lib/skills";
 import { banner, heading, accent, muted, bullet, nav, c } from "../../cli/render";
 
 export function GET(req: NextRequest) {
@@ -7,40 +8,31 @@ export function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  const skills = [
-    { group: "Languages", items: "Go · TypeScript · Python · C/C++ · Dart · Bash" },
-    { group: "Cloud & Containers", items: "AWS (EC2) · Oracle Cloud · GCP · Docker · Kubernetes · gVisor · Incus" },
-    { group: "CI/CD & IaC", items: "GitHub Actions · Terraform" },
-    { group: "Observability", items: "Prometheus · Grafana · Redis" },
-    { group: "Web / Backend", items: "Node.js · REST APIs · Nginx" },
-    { group: "Databases", items: "PostgreSQL · MongoDB · Firebase" },
-  ];
+  const skills = getSkills();
 
   const body = [
     "",
     banner(),
     heading("About"),
     "",
-    `  ${c.white}Infrastructure & DevOps engineer focused on container${c.reset}`,
-    `  ${c.white}orchestration, deployment automation, and observability.${c.reset}`,
+    `  ${c.white}Software developer building terminal tools, mobile apps,${c.reset}`,
+    `  ${c.white}web experiments, and the infrastructure behind them.${c.reset}`,
     "",
-    `  ${muted("Building systems that scale reliably and operate")}`,
-    `  ${muted("transparently under load. CS student at VIT Chennai,")}`,
-    `  ${muted("Google Cloud certified (ACE), and an open-source contributor.")}`,
+    `  ${muted("Most of what I make ends up open source.")}`,
     "",
     heading("Skills"),
     "",
-    ...skills.flatMap(s => [
-      `  ${accent(s.group)}`,
-      `  ${c.white}${s.items}${c.reset}`,
+    ...skills.flatMap((s) => [
+      `  ${accent(s.label)}`,
+      `  ${c.white}${s.items.join(" · ")}${c.reset}`,
       "",
     ]),
     heading("Philosophy"),
     "",
-    bullet("Build systems that scale reliably and operate transparently under load"),
+    bullet("Build things end to end — from interface to infrastructure"),
     bullet("Prefer structured systems, reproducible deploys, and thoughtful design"),
-    bullet("Care about container orchestration, deployment automation, and observability"),
-    bullet("Create tools that feel simple, efficient, and intentional"),
+    bullet("Ship tools that feel simple, efficient, and intentional"),
+    bullet("Stay curious — terminals, browsers, phones; whatever the idea needs"),
     nav(),
   ].join("\n");
 
