@@ -114,7 +114,7 @@ const ContactSection = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="min-h-6 text-sm font-mono">
+            <div className="min-h-6 text-sm font-mono" role="status" aria-live="polite">
               {status === "idle" && <span className="text-[var(--muted)]">Ready when you are.</span>}
               {status === "sending" && <span className="text-[var(--accent-2)]">Sending your message...</span>}
               {status === "success" && <span className="text-[var(--accent-2)]">Message sent. Thank you.</span>}

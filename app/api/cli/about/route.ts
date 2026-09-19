@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { banner, heading, accent, muted, label, bullet, divider, nav, c } from "../../cli/render";
+import { isTerminalClient } from "@/app/lib/is-cli";
+import { banner, heading, accent, muted, bullet, nav, c } from "../../cli/render";
 
 export function GET(req: NextRequest) {
+  if (!isTerminalClient(req.headers.get("user-agent"))) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   const skills = [
     { group: "Languages", items: "Go · TypeScript · Python · C/C++ · Dart · Bash" },
     { group: "Cloud & Containers", items: "AWS (EC2) · Oracle Cloud · GCP · Docker · Kubernetes · gVisor · Incus" },

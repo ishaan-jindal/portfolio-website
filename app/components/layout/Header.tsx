@@ -102,6 +102,24 @@ const Header = () => {
     }
   }, []);
 
+  // Close the mobile menu on Escape and return focus to the toggle button
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        document
+          .querySelector<HTMLElement>('[aria-label="Toggle navigation menu"]')
+          ?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    document
+      .querySelector<HTMLElement>(".mobile-menu-panel button")
+      ?.focus({ preventScroll: true });
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 pt-3 sm:pt-4 px-3 sm:px-4 flex justify-center">
@@ -138,6 +156,7 @@ const Header = () => {
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             <span className={`block w-5 h-px bg-[var(--foreground)] transition-all duration-200 ${mobileOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} />
             <span className={`block w-5 h-px bg-[var(--foreground)] transition-all duration-200 ${mobileOpen ? "-rotate-45 -translate-y-[3.5px]" : ""}`} />
@@ -149,7 +168,8 @@ const Header = () => {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-[rgba(11,13,16,0.96)] flex flex-col items-center justify-center gap-8"
+            id="mobile-menu"
+            className="mobile-menu-panel fixed inset-0 z-40 bg-[rgba(11,13,16,0.96)] flex flex-col items-center justify-center gap-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

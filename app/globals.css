@@ -37,6 +37,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  background: var(--foreground);
+  color: #111318;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.875rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  transition: top 180ms ease;
+}
+
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
 h1,
 h2,
 h3,

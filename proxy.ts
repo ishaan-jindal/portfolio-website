@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { isTerminalClient } from "./app/lib/is-cli";
 
 // Routes that have CLI equivalents
 const CLI_ROUTES: Record<string, string> = {
@@ -17,7 +18,13 @@ const BROWSER_REDIRECTS: Record<string, string> = {
 };
 
 // Known routes that should NOT be redirected
-const KNOWN_ROUTES = new Set(["/", "/resume", "/admin", "/admin/dashboard"]);
+const KNOWN_ROUTES = new Set([
+  "/",
+  "/resume",
+  "/admin",
+  "/admin/dashboard",
+  "/manifest.webmanifest",
+]);
 
 // Fail closed: no JWT_SECRET → admin dashboard access is denied
 const JWT_SECRET = process.env.JWT_SECRET
@@ -57,7 +64,7 @@ export async function proxy(req: NextRequest) {
   requestHeaders.set("Content-Security-Policy", csp);
 
   const ua = req.headers.get("user-agent") ?? "";
-  const isCLI = /curl|wget|httpie|fetch|powershell/i.test(ua);
+  const isCLI = isTerminalClient(ua);
   const pathname = req.nextUrl.pathname;
 
   // CLI clients → rewrite to API routes
@@ -129,6 +136,6 @@ export async function proxy(req: NextRequest) {
 export const config = {
   // Match everything except Next internals, API routes, and static files
   matcher: [
-    "/((?!_next|api|favicon\\.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico|pdf|css|js|woff2?|ttf)).*)",
+    "/((?!_next|api|favicon\\.ico|manifest\\.webmanifest|robots\\.txt|sitemap\\.xml|.*\\.(?:png|jpg|jpeg|svg|gif|webp|ico|pdf|css|js|woff2?|ttf)).*)",
   ],
 };

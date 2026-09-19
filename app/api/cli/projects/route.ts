@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProjects } from "@/app/lib/projects";
-import { banner, heading, accent, muted, label, bullet, link, divider, nav, c } from "../../cli/render";
+import { isTerminalClient } from "@/app/lib/is-cli";
+import { banner, heading, accent, muted, bullet, link, divider, nav, c } from "../../cli/render";
 
 export function GET(req: NextRequest) {
+  if (!isTerminalClient(req.headers.get("user-agent"))) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   const projects = getProjects();
 
   const body = [
@@ -12,7 +17,7 @@ export function GET(req: NextRequest) {
     "",
     `  ${muted("Projects that prioritize curiosity, iteration, and understanding over polish")}`,
     "",
-    ...projects.flatMap((p, i) => {
+    ...projects.flatMap((p) => {
       const lines: string[] = [];
       lines.push(divider());
       lines.push("");

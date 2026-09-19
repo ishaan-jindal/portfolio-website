@@ -27,6 +27,10 @@ export const metadata: Metadata = {
     template: "%s — Ishaan Jindal",
   },
   description: siteDescription,
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   alternates: {
     canonical: "/",
   },
@@ -37,7 +41,7 @@ export const metadata: Metadata = {
     siteName: "Ishaan Jindal",
     images: [
       {
-        url: "/og.png",
+        url: "/og.jpg",
         width: 1200,
         height: 630,
         alt: "Ishaan Jindal Portfolio",
@@ -50,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ishaan Jindal — Infrastructure & DevOps Engineer",
     description: siteDescription,
-    images: ["/og.png"],
+    images: ["/og.jpg"],
   },
 };
 
@@ -87,7 +91,10 @@ export default function RootLayout({
         </div>
 
         <Header />
-        <main className="flex-1 flex flex-col">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+        <main id="main-content" className="flex-1 flex flex-col">
           {children}
         </main>
       </body>

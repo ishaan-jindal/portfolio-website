@@ -7,6 +7,26 @@ const CONTACT_LIMIT = { name: "contact", windowMs: 10 * 60 * 1000, max: 5 };
 const MAX_MESSAGE_LENGTH = 5000;
 
 export async function POST(req: NextRequest) {
+  // Same-origin check: browsers on other sites must not spend our
+  // visitors' rate-limit budget (or ours) submitting the form cross-site.
+  // Non-browser clients send no Origin and are unaffected.
+  const origin = req.headers.get("origin");
+  if (origin) {
+    let allowed = false;
+    try {
+      const url = new URL(origin);
+      allowed =
+        url.host === "ishaanjindal.tech" ||
+        (process.env.NODE_ENV !== "production" &&
+          (url.hostname === "localhost" || url.hostname === "127.0.0.1"));
+    } catch {
+      allowed = false;
+    }
+    if (!allowed) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+
   const limited = rateLimit(req, CONTACT_LIMIT);
   if (!limited.allowed) {
     return NextResponse.json(

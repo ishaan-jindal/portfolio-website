@@ -35,7 +35,7 @@ const AboutSection = () => {
       <div className="relative isolate min-h-[calc(100vh-5rem)] w-full overflow-hidden flex items-center">
         <div className="pointer-events-none absolute inset-y-0 right-[-30%] z-[-2] flex w-[120%] items-center justify-center opacity-20 sm:right-[-16%] sm:w-[88%] sm:opacity-44 lg:right-[-8%] lg:w-[62%] lg:opacity-52">
           <Image
-            src="/ascii-me.png"
+            src="/ascii-me.webp"
             alt=""
             width={1000}
             height={1000}

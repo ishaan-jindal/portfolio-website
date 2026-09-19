@@ -76,7 +76,7 @@ NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
 For the admin panel (`/admin`), also set these — `JWT_SECRET` is required and has **no fallback**:
 
 ```env
-ADMIN_PASSWORD_HASH=sha256_of_your_admin_password
+ADMIN_PASSWORD_HASH=scrypt_N_r_p_saltHex_keyHex
 JWT_SECRET=long_random_string
 GITHUB_TOKEN=github_personal_access_token
 ```
@@ -87,24 +87,35 @@ GITHUB_TOKEN=github_personal_access_token
 
 ```
 app/
+├── admin/                   # Admin login + dashboard (JWT-gated)
 ├── api/
-│   └── cli/               # Terminal (curl) API routes
-│       ├── render.ts       # ANSI color helpers, figlet banner, layout utils
-│       ├── route.ts        # GET / — home banner
-│       ├── about/route.ts  # GET /about — skills & philosophy
-│       ├── projects/route.ts # GET /projects — project details
-│       └── contact/route.ts  # GET /contact — contact info
+│   ├── admin/               # Auth (scrypt, rate-limited) + GitHub-backed projects CRUD
+│   ├── cli/                 # Terminal (curl) API routes
+│   │   ├── render.ts        # ANSI color helpers, figlet banner, layout utils
+│   │   ├── route.ts         # GET / — home banner
+│   │   ├── about/route.ts   # GET /about — skills & philosophy
+│   │   ├── projects/route.ts # GET /projects — project details
+│   │   └── contact/route.ts # GET /contact — contact info
+│   └── contact/route.ts     # Contact form proxy (EmailJS, honeypot, rate limit, origin check)
 ├── components/
-│   ├── layout/            # Header (mobile hamburger menu), Footer
-│   ├── sections/          # AboutSection, ProjectsSection, ContactSection
-│   └── utils/             # Reveal, TextProjectCard, ProjectPreviewModal, AsciiPanel
+│   ├── layout/              # Header (mobile menu), Footer
+│   ├── sections/            # AboutSection, ProjectsSection, ContactSection
+│   └── utils/               # Reveal, TextProjectCard, ProjectPreviewModal, AsciiPanel
 ├── lib/
-│   └── projects.ts        # Project data & types
-├── globals.css            # Design tokens, component styles, responsive rules
-├── layout.tsx             # Root layout & metadata
-└── page.tsx               # Home page
-middleware.ts              # UA detection, CLI rewrites, browser redirects
+│   ├── auth.ts              # JWT sessions, scrypt password verification
+│   ├── github.ts            # Projects sync via GitHub Contents API
+│   ├── is-cli.ts            # Shared terminal-UA detection
+│   ├── projects.ts          # Project data & types
+│   └── rate-limit.ts        # In-memory sliding window + lockout
+├── globals.css              # Design tokens, component styles, responsive rules
+├── layout.tsx               # Root layout & metadata
+└── page.tsx                 # Home page
+proxy.ts                     # UA detection, CLI rewrites, browser redirects, CSP nonces
 public/
-├── resume.pdf             # Downloadable resume
-└── ascii-me.png           # ASCII portrait for hero section
+├── ascii-me.webp            # Portrait for hero section
+├── favicon.ico              # Site icon (16/32/48)
+├── icon-192.png / icon-512.png # PWA icons
+├── apple-touch-icon.png     # iOS touch icon
+├── og.jpg                   # Social preview (1200×630)
+└── resume.pdf               # Downloadable resume
 ```

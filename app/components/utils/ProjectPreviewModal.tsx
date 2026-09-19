@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Project } from "@/app/lib/projects";
 import { createPortal } from "react-dom";
@@ -10,16 +10,52 @@ interface Props {
   onClose: () => void;
 }
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), textarea, input:not([disabled]), select, [tabindex]:not([tabindex="-1"])';
+
 const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
   const prefersReducedMotion = useReducedMotion();
+  const articleRef = useRef<HTMLElement | null>(null);
+  const prevFocus = useRef<Element | null>(null);
 
   useEffect(() => {
+    prevFocus.current = document.activeElement;
+    const article = articleRef.current;
+    article
+      ?.querySelector<HTMLElement>("[data-autofocus]")
+      ?.focus({ preventScroll: true });
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      // Focus trap: keep Tab cycling inside the dialog
+      if (e.key !== "Tab" || !article) return;
+      const items = Array.from(
+        article.querySelectorAll<HTMLElement>(FOCUSABLE)
+      ).filter((el) => el.offsetParent !== null);
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
 
     window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = prevOverflow;
+      (prevFocus.current as HTMLElement | null)?.focus?.();
+    };
   }, [onClose]);
 
   if (typeof document === "undefined") return null;
@@ -33,6 +69,10 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
       onClick={onClose}
     >
       <motion.article
+        ref={articleRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-modal-title"
         onClick={(e) => e.stopPropagation()}
         className="ascii-panel max-w-3xl w-full max-h-[92vh] sm:max-h-[88vh] overflow-y-auto scrollbar-hide rounded-t-2xl sm:rounded-lg"
         initial={prefersReducedMotion ? false : { y: 18, opacity: 0 }}
@@ -43,7 +83,12 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
         <div className="flex items-start justify-between gap-6">
           <div>
             <p className="font-mono text-sm text-[var(--accent)]">{project.asciiLabel}</p>
-            <h3 className="mt-2 text-2xl sm:text-3xl font-semibold text-[var(--foreground)]">
+            <h3
+              id="project-modal-title"
+              tabIndex={-1}
+              data-autofocus
+              className="mt-2 text-2xl sm:text-3xl font-semibold text-[var(--foreground)]"
+            >
               {project.title}
             </h3>
             <p className="mt-2 font-mono text-sm text-[var(--muted)]">

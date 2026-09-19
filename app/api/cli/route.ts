@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { banner, heading, accent, muted, label, link, bullet, divider, nav, c } from "../cli/render";
+import { isTerminalClient } from "@/app/lib/is-cli";
+import { banner, accent, label, link, divider, nav, c } from "../cli/render";
 
 // ── Home / root CLI response ────────────────────────────────────────
 export function GET(req: NextRequest) {
-  const ua = req.headers.get("user-agent") ?? "";
-  const isCurl = /curl|wget|httpie|fetch|powershell/i.test(ua);
-
-  if (!isCurl) {
-    // Not a terminal client — let Next.js render the normal page
-    // Returns a redirect so the page.tsx handles it
-    return NextResponse.next();
+  if (!isTerminalClient(req.headers.get("user-agent"))) {
+    // Browsers should use the SPA — the CLI routes serve text/plain only.
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   const body = [
