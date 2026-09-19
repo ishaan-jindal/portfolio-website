@@ -1,7 +1,11 @@
+import { Suspense } from "react";
 import { ClipReveal, Rise, DrawRule, CountUp, Flicker } from "../utils/motion";
+import QuoteBlock, { QuoteContent } from "./QuoteBlock";
+import { getFallbackQuote } from "@/app/lib/quotes";
 
 const HeroSection = () => {
   const year = new Date().getFullYear();
+  const fallbackQuote = getFallbackQuote();
 
   return (
     <div className="flex flex-col">
@@ -102,11 +106,16 @@ const HeroSection = () => {
 
           <Rise delay={0.4}>
             <div className="lg:text-right">
-              <p className="text-sm leading-6 text-[var(--muted)]">
-                &ldquo;Good software
-                <br />
-                makes freedom possible.&rdquo;
-              </p>
+              <Suspense
+                fallback={
+                  <QuoteContent
+                    text={fallbackQuote.text}
+                    author={fallbackQuote.author}
+                  />
+                }
+              >
+                <QuoteBlock />
+              </Suspense>
               <div className="mt-3 hidden justify-end lg:flex" aria-hidden="true">
                 <div className="w-16">
                   <DrawRule delay={0.55} accent />
