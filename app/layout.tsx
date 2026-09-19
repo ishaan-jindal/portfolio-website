@@ -70,6 +70,7 @@ const personSchema = {
   sameAs: [
     "https://github.com/ishaan-jindal",
     "https://linkedin.com/in/jindal-ishaan",
+    "https://x.com/Ishaan1899",
   ],
 };
 

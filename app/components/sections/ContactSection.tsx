@@ -22,6 +22,16 @@ const links = [
     ),
   },
   {
+    label: "X",
+    handle: "@Ishaan1899",
+    href: "https://x.com/Ishaan1899",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M12.6 0h2.45l-5.35 6.12L16 16h-4.93L7.21 10.72 2.8 16H.35l5.72-6.54L0 0h5.06l3.48 4.6L12.6 0Zm-.86 14.4h1.36L4.32 1.52H2.86L11.74 14.4Z" />
+      </svg>
+    ),
+  },
+  {
     label: "Email",
     handle: "ishaanjindal2006@gmail.com",
     href: "mailto:ishaanjindal2006@gmail.com",

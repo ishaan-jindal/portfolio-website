@@ -20,6 +20,7 @@ export function GET(req: NextRequest) {
     label("Email    ", link("ishaanjindal2006@gmail.com")),
     label("GitHub   ", link("https://github.com/ishaan-jindal")),
     label("LinkedIn ", link("https://linkedin.com/in/jindal-ishaan")),
+    label("X        ", link("https://x.com/Ishaan1899")),
     label("Web      ", link("https://ishaanjindal.tech")),
     "",
     divider(),
