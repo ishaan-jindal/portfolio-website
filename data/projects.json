@@ -4,6 +4,7 @@
     "title": "Runnix",
     "shortTitle": "Sandboxed execution",
     "asciiLabel": "[RX]",
+    "category": "Developer Tool",
     "description": "Secure, isolated code execution service with JWT authentication, user-based rate limiting, Docker + gVisor sandbox, and comprehensive monitoring.",
     "stack": [
       "Node.js",
@@ -24,6 +25,7 @@
     "title": "Termchat",
     "shortTitle": "Anonymous terminal chatrooms",
     "asciiLabel": "[TC]",
+    "category": "Communication",
     "description": "Minimal anonymous terminal chatrooms built for quick collaboration, debugging sessions, pair programming, temporary communities, and realtime internet-native communication directly from the terminal. No signup, no browser tabs, just one command to create or join a room instantly.",
     "stack": [
       "Go",
@@ -49,6 +51,7 @@
     "title": "Termchat Mobile",
     "shortTitle": "Anonymous chatrooms on mobile",
     "asciiLabel": "[TM]",
+    "category": "Mobile",
     "description": "Mobile companion for termchat — join anonymous terminal chatrooms seamlessly from your phone. Currently in closed beta on Google Play.",
     "stack": [
       "Flutter",
@@ -70,6 +73,7 @@
     "title": "SwiftWrite",
     "shortTitle": "Local writing desk",
     "asciiLabel": "[SW]",
+    "category": "Productivity",
     "description": "Local-first, cross-platform Flutter writing app with Markdown support, optional cloud sync, and code execution.",
     "stack": [
       "Flutter",
@@ -90,6 +94,7 @@
     "title": "WeDroid",
     "shortTitle": "Club ops app",
     "asciiLabel": "[WD]",
+    "category": "Application",
     "description": "A full-stack club management application for coordinating members, events, and internal updates without burying the simple workflows.",
     "stack": [
       "Flutter",
@@ -110,6 +115,7 @@
     "title": "Steal CSS",
     "shortTitle": "Style mutation tool",
     "asciiLabel": "[SC]",
+    "category": "Experiment",
     "description": "A browser-facing experiment that extracts a page's styling, mutates it into a stranger design language, and shows the transformed result.",
     "stack": [
       "Node.js",

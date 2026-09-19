@@ -1,0 +1,38 @@
+[
+  {
+    "label": "Languages",
+    "items": ["Go", "TypeScript", "Python", "C/C++", "Dart", "Bash"]
+  },
+  {
+    "label": "Cloud & DevOps",
+    "items": [
+      "Docker",
+      "Kubernetes",
+      "Terraform",
+      "AWS",
+      "GCP",
+      "Oracle Cloud",
+      "GitHub Actions"
+    ]
+  },
+  {
+    "label": "Observability",
+    "items": ["Prometheus", "Grafana", "Redis"]
+  },
+  {
+    "label": "Databases",
+    "items": ["PostgreSQL", "MongoDB", "Firebase"]
+  },
+  {
+    "label": "Web / Backend",
+    "items": ["Node.js", "REST APIs", "Nginx"]
+  },
+  {
+    "label": "Developer Tools",
+    "items": ["Git", "Linux", "CI/CD", "gVisor", "Incus"]
+  },
+  {
+    "label": "Other",
+    "items": ["Open Source", "Automation", "Systems"]
+  }
+]

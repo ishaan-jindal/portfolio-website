@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isTerminalClient } from "@/app/lib/is-cli";
 import { banner, heading, accent, muted, label, link, divider, nav, c } from "../../cli/render";
 
 export function GET(req: NextRequest) {
+  if (!isTerminalClient(req.headers.get("user-agent"))) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   const body = [
     "",
     banner(),

@@ -1,176 +1,285 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+} from "framer-motion";
+import { EASE, Stagger, StaggerItem } from "../utils/motion";
 
-const sections = ["about", "projects", "contact"];
+const sections = [
+  { id: "about", num: "01", label: "About" },
+  { id: "projects", num: "02", label: "Projects" },
+  { id: "skills", num: "03", label: "Skills" },
+  { id: "contact", num: "04", label: "Contact" },
+];
 
-const identityMap: Record<string, string> = {
-  about: "Ishaan Jindal",
-  projects: "Projects",
-  contact: "Contact",
-};
+const disciplines = ["Build", "Deploy", "Automate", "Repeat"];
 
-const NavLink = ({
-  href,
+const NavItem = ({
+  section,
   active,
-  children,
+  hovered,
+  onHover,
+  onNavigate,
 }: {
-  href: string;
+  section: (typeof sections)[number];
   active: boolean;
-  children: React.ReactNode;
-}) => {
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const targetId = href.substring(1);
-    const targetElement = document.getElementById(targetId);
+  hovered: boolean;
+  onHover: (id: string | null) => void;
+  onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, id: string) => void;
+}) => (
+  <a
+    href={`#${section.id}`}
+    onClick={(e) => onNavigate(e, section.id)}
+    onMouseEnter={() => onHover(section.id)}
+    onMouseLeave={() => onHover(null)}
+    onFocus={() => onHover(section.id)}
+    onBlur={() => onHover(null)}
+    data-active={active}
+    className="nav-link relative"
+    aria-current={active ? "true" : undefined}
+  >
+    <span className="nav-link__num">{section.num}</span>
+    {section.label}
+    {active && (
+      <motion.span
+        layoutId="active-nav-line"
+        className="nav-link__underline"
+        transition={{ duration: 0.2, ease: "easeOut" }}
+      />
+    )}
+    {hovered && !active && (
+      <motion.span
+        layoutId="hover-nav-line"
+        className="nav-link__underline opacity-50"
+        transition={{ duration: 0.18, ease: EASE }}
+      />
+    )}
+  </a>
+);
 
-    if (targetElement) {
-      window.scrollTo({
-        top: targetElement.offsetTop,
-        behavior: "smooth",
-      });
-    }
-  };
-
+const ScrollProgress = () => {
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  if (prefersReducedMotion) return null;
   return (
-    <a
-      href={href}
-      onClick={handleClick}
-      className={`relative px-3 py-1.5 font-mono text-sm transition-colors ${
-        active ? "text-[var(--foreground)]" : "text-[var(--muted)] hover:text-[var(--foreground)]"
-      }`}
-    >
-      {active && (
-        <motion.span
-          layoutId="active-nav-line"
-          className="absolute left-3 right-3 -bottom-0.5 h-px bg-[var(--accent)]"
-          transition={{ duration: 0.2, ease: "easeOut" }}
-        />
-      )}
-      {children}
-    </a>
+    <motion.div
+      aria-hidden="true"
+      className="absolute bottom-[-1px] left-0 h-px w-full origin-left bg-[var(--accent)]"
+      style={{ scaleX: scrollYProgress }}
+    />
   );
 };
-
 const Header = () => {
   const [active, setActive] = useState("about");
-  const [scrolled, setScrolled] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    let frame = 0;
+
     const handler = () => {
-      const scrollPos = window.scrollY;
-      setScrolled(scrollPos > 20);
-
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-
-        if (
-          scrollPos >= el.offsetTop - 150 &&
-          scrollPos < el.offsetTop + el.offsetHeight - 150
-        ) {
-          setActive(id);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        // Sections can be nested inside positioned wrappers, so offsetTop is
+        // unreliable — always measure against the viewport.
+        const probe = 120;
+        let current = sections[0].id;
+        for (const section of sections) {
+          const el = document.getElementById(section.id);
+          if (!el) continue;
+          if (el.getBoundingClientRect().top <= probe) {
+            current = section.id;
+          }
         }
-      }
+
+        // Pin the last section when the page cannot scroll any further
+        const doc = document.documentElement;
+        if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+          current = sections[sections.length - 1].id;
+        }
+
+        setActive(current);
+      });
     };
 
-    window.addEventListener("scroll", handler);
+    window.addEventListener("scroll", handler, { passive: true });
+    window.addEventListener("resize", handler, { passive: true });
     handler();
-    return () => window.removeEventListener("scroll", handler);
+    return () => {
+      window.removeEventListener("scroll", handler);
+      window.removeEventListener("resize", handler);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll when the mobile menu is open
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
-  const handleMobileNav = useCallback((sectionId: string) => {
-    setMobileOpen(false);
-    const el = document.getElementById(sectionId);
-    if (el) {
-      setTimeout(() => {
-        window.scrollTo({ top: el.offsetTop, behavior: "smooth" });
-      }, 100);
-    }
-  }, []);
+  const navigateTo = useCallback(
+    (id: string) => {
+      setMobileOpen(false);
+      const el = document.getElementById(id);
+      if (!el) return;
+      // scroll-padding-top on <html> keeps the section clear of the fixed header
+      el.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    },
+    [prefersReducedMotion]
+  );
+
+  const handleNavigate = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+      e.preventDefault();
+      navigateTo(id);
+    },
+    [navigateTo]
+  );
+
+  // Close the mobile menu on Escape and return focus to the toggle button
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        document
+          .querySelector<HTMLElement>('[aria-label="Toggle navigation menu"]')
+          ?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    document
+      .querySelector<HTMLElement>(".mobile-menu-panel button")
+      ?.focus({ preventScroll: true });
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 pt-3 sm:pt-4 px-3 sm:px-4 flex justify-center">
-        <motion.nav
-          className={`flex items-center justify-between px-4 py-2.5 sm:py-3 w-full max-w-3xl transition-colors duration-300 border ${
-            scrolled ? "bg-[rgba(12,15,20,0.86)] border-[var(--border)]" : "bg-transparent border-transparent"
-          }`}
-          initial={prefersReducedMotion ? false : { y: -24, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
-        >
-          <div className="flex-1">
-            <span className="text-sm font-mono text-[var(--foreground)] inline-block">
-              {identityMap[active] ?? "Ishaan Jindal"}
-              <span className="text-[var(--accent)]">.</span>
-            </span>
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-[var(--background)]">
+        <div className="site-container relative flex h-[60px] items-center justify-between gap-6">
+          <div className="flex flex-1 items-center">
+            <a
+              href="#about"
+              onClick={(e) => handleNavigate(e, "about")}
+              className="font-mono text-base font-bold tracking-[0.08em] text-[var(--foreground)]"
+              aria-label="Ishaan Jindal — back to top"
+            >
+              IJ
+            </a>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1">
-            <NavLink href="#about" active={active === "about"}>
-              About
-            </NavLink>
-            <NavLink href="#projects" active={active === "projects"}>
-              Projects
-            </NavLink>
-            <NavLink href="#contact" active={active === "contact"}>
-              Contact
-            </NavLink>
+          <nav className="hidden items-center gap-7 md:flex" aria-label="Sections">
+            {sections.map((section) => (
+              <NavItem
+                key={section.id}
+                section={section}
+                active={active === section.id}
+                hovered={hovered === section.id}
+                onHover={setHovered}
+                onNavigate={handleNavigate}
+              />
+            ))}
+          </nav>
+
+          <div className="hidden flex-1 items-center justify-end gap-2 xl:flex">
+            {disciplines.map((word, i) => (
+              <React.Fragment key={word}>
+                {i > 0 && <span className="eyebrow">/</span>}
+                <span className="eyebrow">{word}</span>
+              </React.Fragment>
+            ))}
           </div>
 
           {/* Mobile hamburger button */}
           <button
-            className="sm:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
+            className="flex h-8 w-8 flex-col items-center justify-center gap-1.5 md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
-            <span className={`block w-5 h-px bg-[var(--foreground)] transition-all duration-200 ${mobileOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} />
-            <span className={`block w-5 h-px bg-[var(--foreground)] transition-all duration-200 ${mobileOpen ? "-rotate-45 -translate-y-[3.5px]" : ""}`} />
+            <span
+              className={`block h-px w-5 bg-[var(--foreground)] transition-all duration-200 ${
+                mobileOpen ? "translate-y-[3.5px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`block h-px w-5 bg-[var(--foreground)] transition-all duration-200 ${
+                mobileOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+              }`}
+            />
           </button>
-        </motion.nav>
+        </div>
+        <ScrollProgress />
       </header>
 
       {/* Mobile overlay menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-[rgba(11,13,16,0.96)] flex flex-col items-center justify-center gap-8"
+            id="mobile-menu"
+            className="mobile-menu-panel fixed inset-0 z-40 flex flex-col justify-center bg-[var(--background)] px-5 sm:px-8 md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {sections.map((section) => (
-              <button
-                key={section}
-                onClick={() => handleMobileNav(section)}
-                className={`font-mono text-lg transition-colors ${
-                  active === section
-                    ? "text-[var(--foreground)]"
-                    : "text-[var(--muted)] hover:text-[var(--foreground)]"
-                }`}
-              >
-                {section.charAt(0).toUpperCase() + section.slice(1)}
-                {active === section && (
-                  <span className="block mx-auto mt-1 w-6 h-px bg-[var(--accent)]" />
-                )}
-              </button>
-            ))}
+            <Stagger as="nav" gap={0.05} className="" aria-label="Sections">
+              {sections.map((section) => (
+                <StaggerItem key={section.id} as="div">
+                <button
+                  onClick={() => navigateTo(section.id)}
+                  aria-current={active === section.id ? "true" : undefined}
+                  className="flex w-full items-baseline gap-5 border-b border-[var(--border)] py-5 text-left"
+                >
+                  <span
+                    className={`eyebrow ${
+                      active === section.id ? "text-[var(--accent)]" : ""
+                    }`}
+                  >
+                    {section.num}
+                  </span>
+                  <span
+                    className={`section-title ${
+                      active === section.id ? "" : "text-[var(--muted)]"
+                    }`}
+                  >
+                    {section.label}
+                  </span>
+                </button>
+                </StaggerItem>
+              ))}
+            </Stagger>
+
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.25, ease: EASE }}
+              className="mt-14 flex flex-wrap items-center gap-2"
+            >
+              {disciplines.map((word, i) => (
+                <React.Fragment key={word}>
+                  {i > 0 && <span className="eyebrow">/</span>}
+                  <span className="eyebrow">{word}</span>
+                </React.Fragment>
+              ))}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

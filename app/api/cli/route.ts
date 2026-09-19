@@ -1,28 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { banner, heading, accent, muted, label, link, bullet, divider, nav, c } from "../cli/render";
+import { isTerminalClient } from "@/app/lib/is-cli";
+import { banner, accent, label, link, divider, nav, c } from "../cli/render";
 
 // ── Home / root CLI response ────────────────────────────────────────
 export function GET(req: NextRequest) {
-  const ua = req.headers.get("user-agent") ?? "";
-  const isCurl = /curl|wget|httpie|fetch|powershell/i.test(ua);
-
-  if (!isCurl) {
-    // Not a terminal client — let Next.js render the normal page
-    // Returns a redirect so the page.tsx handles it
-    return NextResponse.next();
+  if (!isTerminalClient(req.headers.get("user-agent"))) {
+    // Browsers should use the SPA — the CLI routes serve text/plain only.
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   const body = [
     "",
     banner(),
-    `  ${c.white}Infrastructure & DevOps engineer focused on container`, 
-    `  ${c.white}orchestration, deployment automation, and observability.${c.reset}`,
+    `  ${c.white}Software developer building terminal tools, mobile apps,`, 
+    `  ${c.white}web experiments, and the infrastructure behind them.${c.reset}`,
     "",
     divider(),
     "",
     label("Location ", "India"),
     label("Stack    ", `${accent("Go")} · ${accent("TypeScript")} · ${accent("Docker")} · ${accent("Kubernetes")} · ${accent("Terraform")}`),
-    label("Focus    ", "Container orchestration, deployment automation, observability"),
+    label("Focus    ", "Apps, tools, web experiments, and the systems behind them"),
     label("Status   ", `${c.green}● Available for opportunities${c.reset}`),
     "",
     label("GitHub   ", link("https://github.com/ishaan-jindal")),

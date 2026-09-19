@@ -1,12 +1,23 @@
 const Footer = () => {
-  return (
-    <footer className="w-full border-t border-[var(--border)] py-6 mt-20">
-      <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-[var(--muted)] gap-4">
-        <span>© {new Date().getFullYear()} Ishaan Jindal</span>
+  const year = new Date().getFullYear();
 
-        <span className="opacity-70">
-          Built with text, care, and a little ASCII.
-        </span>
+  return (
+    <footer className="mt-auto">
+      <div className="site-container">
+        <div className="flex flex-col gap-3 border-t border-[var(--border)] py-8 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+          <span className="font-bold tracking-[0.08em] text-[var(--foreground)]">
+            IJ
+          </span>
+
+          <span>© {year} Ishaan Jindal. All rights reserved.</span>
+
+          <span className="flex items-center gap-2">
+            Built with HTML, CSS and a lot of
+            <span className="text-[var(--accent)]" aria-hidden="true">
+              &gt;_
+            </span>
+          </span>
+        </div>
       </div>
     </footer>
   );

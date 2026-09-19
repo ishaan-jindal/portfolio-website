@@ -10,6 +10,7 @@ const EMPTY_PROJECT: ProjectFormData = {
   title: "",
   shortTitle: "",
   asciiLabel: "",
+  category: "",
   description: "",
   stack: [],
   highlights: [],
@@ -73,6 +74,9 @@ export default function AdminDashboardPage() {
   }, [router]);
 
   useEffect(() => {
+    // Mount-only remote load (external data fetch), not derived state —
+    // exempt from the cascading-render heuristic.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProjects();
   }, [fetchProjects]);
 
@@ -151,13 +155,45 @@ export default function AdminDashboardPage() {
     setFormData(EMPTY_PROJECT);
   };
 
+  // Modal a11y: Escape closes, background scroll locks, focus moves inside.
+  useEffect(() => {
+    if (!modalOpen && deleteIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeModal();
+        setDeleteIndex(null);
+      }
+    };
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    document
+      .querySelector<HTMLElement>(
+        ".admin-edit-modal input, .admin-confirm-modal button"
+      )
+      ?.focus({ preventScroll: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [modalOpen, deleteIndex]);
+
   const handleSaveProject = () => {
-    const id =
+    const slug =
       formData.id ||
       formData.title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
+
+    // Guarantee a unique, non-empty id (React keys + GitHub data integrity)
+    const taken = new Set(
+      projects.filter((_, i) => i !== editIndex).map((p) => p.id)
+    );
+    let id = slug || `project-${Date.now().toString(36)}`;
+    for (let n = 2; taken.has(id); n++) {
+      id = `${slug || "project"}-${n}`;
+    }
 
     const project: Project = {
       ...formData,
@@ -403,6 +439,9 @@ export default function AdminDashboardPage() {
         <div className="admin-modal-overlay" onClick={() => setDeleteIndex(null)}>
           <div
             className="admin-confirm-modal ascii-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirm delete project"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold text-[var(--foreground)]">
@@ -434,6 +473,9 @@ export default function AdminDashboardPage() {
         <div className="admin-modal-overlay" onClick={closeModal}>
           <div
             className="admin-edit-modal ascii-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label={editIndex !== null ? "Edit project" : "New project"}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="admin-edit-modal-header">
@@ -495,6 +537,22 @@ export default function AdminDashboardPage() {
                       setFormData({ ...formData, asciiLabel: e.target.value })
                     }
                     placeholder="[XY]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="proj-category" className="form-label">
+                    Category *
+                  </label>
+                  <input
+                    id="proj-category"
+                    type="text"
+                    className="text-input"
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
+                    placeholder="Developer Tool"
                   />
                 </div>
 
@@ -675,7 +733,10 @@ export default function AdminDashboardPage() {
               <button
                 onClick={handleSaveProject}
                 disabled={
-                  !formData.title || !formData.shortTitle || !formData.description
+                  !formData.title ||
+                  !formData.shortTitle ||
+                  !formData.category ||
+                  !formData.description
                 }
                 className="text-button text-button--primary"
               >

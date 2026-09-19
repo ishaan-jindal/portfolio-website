@@ -2,6 +2,9 @@
   "name": "portfolio-website",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "build": "next build --turbopack",
     "dev": "next dev --turbopack",
@@ -10,22 +13,19 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.6",
     "framer-motion": "^12.26.2",
     "jose": "^6.2.3",
-    "next": "^16.1.1",
+    "next": "^16.3.5",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-type-animation": "^3.2.0"
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "^15",
+    "eslint-config-next": "^16.3.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

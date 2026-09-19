@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import Reveal from "../utils/Reveal";
 import type { Project } from "@/app/lib/projects";
+import ProjectIndexRow from "../utils/ProjectIndexRow";
 import ProjectPreviewModal from "../utils/ProjectPreviewModal";
-import TextProjectCard from "../utils/TextProjectCard";
+import { Stagger, StaggerItem, CountUp, Rise } from "../utils/motion";
 
 type Props = {
   projects: Project[];
@@ -15,34 +15,59 @@ const ProjectsSection = ({ projects }: Props) => {
   const [activeProject, setActiveProject] = useState<number | null>(null);
 
   return (
-    <div className="w-full mx-auto font-sans py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <Reveal delay={0.1}>
-          <div className="mb-12 max-w-3xl">
-            <p className="font-mono text-sm text-[var(--accent)] mb-3">
-              Projects
+    <div>
+      <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+        <Rise scroll>
+          <div>
+            <p className="eyebrow">
+              <span className="text-[var(--accent)]">
+                <CountUp to={2} />
+              </span>{" "}
+              / 04
             </p>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-semibold text-[var(--foreground)] mb-3 sm:mb-4">
-              Experiments disguised as projects
+            <h2 className="section-title mt-4">
+              Selected
+              <br />
+              projects
             </h2>
-            <p className="text-base leading-7 text-[var(--muted)]">
-              Projects that prioritize curiosity, iteration, and understanding over polish
-            </p>
           </div>
-        </Reveal>
+        </Rise>
 
-        <Reveal delay={0.2} overflow="visible">
-          <div className="grid gap-5 pt-2 md:grid-cols-2">
-            {projects.map((project, index) => (
-              <TextProjectCard
-                key={project.id}
-                project={project}
-                onClick={() => setActiveProject(index)}
-              />
-            ))}
+        <Rise scroll delay={0.1}>
+          <div className="lg:max-w-sm lg:text-right">
+            <p className="text-sm leading-6 text-[var(--soft)]">
+              Small tools. Bigger ideas.
+              <br />A collection of projects I&apos;ve built and contributed to.
+            </p>
+            <a
+              href="https://github.com/ishaan-jindal?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-5 inline-flex items-center gap-2 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-[var(--foreground)] transition-colors hover:text-[var(--accent)]"
+            >
+              View all
+              <span
+                aria-hidden="true"
+                className="inline-block transition-transform duration-200 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </a>
           </div>
-        </Reveal>
+        </Rise>
       </div>
+
+      <Stagger className="mt-10 border-t border-[var(--border)]" gap={0.045}>
+        {projects.map((project, index) => (
+          <StaggerItem key={project.id} as="div">
+            <ProjectIndexRow
+              project={project}
+              index={index}
+              onClick={() => setActiveProject(index)}
+            />
+          </StaggerItem>
+        ))}
+      </Stagger>
 
       <AnimatePresence>
         {activeProject !== null && (
