@@ -20,6 +20,10 @@
   --accent-3: #d9a441;
   --section-y: clamp(3rem, 6vw, 5.5rem);
   --container-max: 1440px;
+  --ease-swiss: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 180ms;
+  --dur-base: 280ms;
+  --dur-slow: 500ms;
 }
 
 @theme inline {
@@ -213,6 +217,7 @@ h6 {
   row-gap: 0.65rem;
   align-items: start;
   width: 100%;
+  position: relative;
   border-bottom: 1px solid var(--border);
   background: transparent;
   padding: 1.35rem 0.75rem 1.35rem 0;
@@ -233,13 +238,34 @@ h6 {
   transition: color 180ms ease;
 }
 
-.index-row:hover .index-row__num {
+.index-row:hover .index-row__num,
+.index-row:focus-visible .index-row__num {
   color: var(--accent);
+  transition-delay: 40ms;
 }
 
 .index-row__main {
   grid-area: main;
   min-width: 0;
+}
+
+/* Accent hairline wipe on hover / keyboard focus */
+.index-row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-slow) var(--ease-swiss);
+}
+
+.index-row:hover::after,
+.index-row:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .index-row__title {
@@ -248,6 +274,12 @@ h6 {
   font-weight: 700;
   letter-spacing: -0.015em;
   color: var(--foreground);
+  transition: transform var(--dur-base) var(--ease-swiss);
+}
+
+.index-row:hover .index-row__title,
+.index-row:focus-visible .index-row__title {
+  transform: translateX(2px);
 }
 
 .index-row__desc {
@@ -283,7 +315,8 @@ h6 {
   font-size: 1.1rem;
   line-height: 1.4;
   color: var(--muted);
-  transition: color 180ms ease, transform 180ms ease;
+  transition: color var(--dur-fast) var(--ease-swiss),
+    transform var(--dur-fast) var(--ease-swiss);
 }
 
 .index-row:hover .index-row__arrow {

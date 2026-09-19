@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+} from "framer-motion";
+import { EASE, Stagger, StaggerItem } from "../utils/motion";
 
 const sections = [
   { id: "about", num: "01", label: "About" },
@@ -15,15 +21,23 @@ const disciplines = ["Build", "Deploy", "Automate", "Repeat"];
 const NavItem = ({
   section,
   active,
+  hovered,
+  onHover,
   onNavigate,
 }: {
   section: (typeof sections)[number];
   active: boolean;
+  hovered: boolean;
+  onHover: (id: string | null) => void;
   onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, id: string) => void;
 }) => (
   <a
     href={`#${section.id}`}
     onClick={(e) => onNavigate(e, section.id)}
+    onMouseEnter={() => onHover(section.id)}
+    onMouseLeave={() => onHover(null)}
+    onFocus={() => onHover(section.id)}
+    onBlur={() => onHover(null)}
     data-active={active}
     className="nav-link relative"
     aria-current={active ? "true" : undefined}
@@ -37,11 +51,31 @@ const NavItem = ({
         transition={{ duration: 0.2, ease: "easeOut" }}
       />
     )}
+    {hovered && !active && (
+      <motion.span
+        layoutId="hover-nav-line"
+        className="nav-link__underline opacity-50"
+        transition={{ duration: 0.18, ease: EASE }}
+      />
+    )}
   </a>
 );
 
+const ScrollProgress = () => {
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  if (prefersReducedMotion) return null;
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="absolute bottom-[-1px] left-0 h-px w-full origin-left bg-[var(--accent)]"
+      style={{ scaleX: scrollYProgress }}
+    />
+  );
+};
 const Header = () => {
   const [active, setActive] = useState("about");
+  const [hovered, setHovered] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -51,21 +85,34 @@ const Header = () => {
     const handler = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const probe = window.scrollY + 160;
+        // Sections can be nested inside positioned wrappers, so offsetTop is
+        // unreliable — always measure against the viewport.
+        const probe = 120;
+        let current = sections[0].id;
         for (const section of sections) {
           const el = document.getElementById(section.id);
           if (!el) continue;
-          if (probe >= el.offsetTop && probe < el.offsetTop + el.offsetHeight) {
-            setActive(section.id);
+          if (el.getBoundingClientRect().top <= probe) {
+            current = section.id;
           }
         }
+
+        // Pin the last section when the page cannot scroll any further
+        const doc = document.documentElement;
+        if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+          current = sections[sections.length - 1].id;
+        }
+
+        setActive(current);
       });
     };
 
     window.addEventListener("scroll", handler, { passive: true });
+    window.addEventListener("resize", handler, { passive: true });
     handler();
     return () => {
       window.removeEventListener("scroll", handler);
+      window.removeEventListener("resize", handler);
       cancelAnimationFrame(frame);
     };
   }, []);
@@ -87,9 +134,10 @@ const Header = () => {
       setMobileOpen(false);
       const el = document.getElementById(id);
       if (!el) return;
-      window.scrollTo({
-        top: el.offsetTop - 60,
+      // scroll-padding-top on <html> keeps the section clear of the fixed header
+      el.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
       });
     },
     [prefersReducedMotion]
@@ -124,7 +172,7 @@ const Header = () => {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-[var(--background)]">
-        <div className="site-container flex h-[60px] items-center justify-between gap-6">
+        <div className="site-container relative flex h-[60px] items-center justify-between gap-6">
           <div className="flex flex-1 items-center">
             <a
               href="#about"
@@ -142,6 +190,8 @@ const Header = () => {
                 key={section.id}
                 section={section}
                 active={active === section.id}
+                hovered={hovered === section.id}
+                onHover={setHovered}
                 onNavigate={handleNavigate}
               />
             ))}
@@ -176,6 +226,7 @@ const Header = () => {
             />
           </button>
         </div>
+        <ScrollProgress />
       </header>
 
       {/* Mobile overlay menu */}
@@ -189,10 +240,10 @@ const Header = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <nav aria-label="Sections">
+            <Stagger as="nav" gap={0.05} className="" aria-label="Sections">
               {sections.map((section) => (
+                <StaggerItem key={section.id} as="div">
                 <button
-                  key={section.id}
                   onClick={() => navigateTo(section.id)}
                   aria-current={active === section.id ? "true" : undefined}
                   className="flex w-full items-baseline gap-5 border-b border-[var(--border)] py-5 text-left"
@@ -212,17 +263,23 @@ const Header = () => {
                     {section.label}
                   </span>
                 </button>
+                </StaggerItem>
               ))}
-            </nav>
+            </Stagger>
 
-            <div className="mt-14 flex flex-wrap items-center gap-2">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.25, ease: EASE }}
+              className="mt-14 flex flex-wrap items-center gap-2"
+            >
               {disciplines.map((word, i) => (
                 <React.Fragment key={word}>
                   {i > 0 && <span className="eyebrow">/</span>}
                   <span className="eyebrow">{word}</span>
                 </React.Fragment>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

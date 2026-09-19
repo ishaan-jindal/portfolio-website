@@ -3,6 +3,7 @@ import ProjectsSection from './components/sections/ProjectsSection';
 import SkillsSection from './components/sections/SkillsSection';
 import ContactSection from './components/sections/ContactSection';
 import Footer from './components/layout/Footer';
+import { DrawRule } from './components/utils/motion';
 import { getProjects } from './lib/projects';
 
 // CSP nonces require dynamic rendering so Next can inject them per-request
@@ -18,17 +19,22 @@ export default function Home() {
           <HeroSection />
         </section>
 
-        <section
-          id="projects"
-          className="hairline-top py-[var(--section-y)]"
-        >
+        <DrawRule />
+
+        <section id="projects" className="py-[var(--section-y)]">
           <ProjectsSection projects={projects} />
         </section>
 
-        <div className="hairline-top grid lg:grid-cols-[1.45fr_1fr]">
+        <DrawRule />
+
+        <div className="relative grid lg:grid-cols-[1.45fr_1fr]">
+          <DrawRule
+            direction="y"
+            className="absolute inset-y-0 left-[59.18%] hidden lg:block"
+          />
           <section
             id="skills"
-            className="py-[var(--section-y)] lg:border-r lg:border-[var(--border)] lg:pr-14"
+            className="py-[var(--section-y)] lg:pr-14"
           >
             <SkillsSection />
           </section>

@@ -65,7 +65,8 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
       className="fixed inset-0 z-[100] flex items-end justify-center bg-[rgba(10,10,10,0.9)] sm:items-center sm:px-6"
       initial={prefersReducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+      exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.12, ease: "easeOut" }}
       onClick={onClose}
     >
       <motion.article
@@ -75,11 +76,24 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
         aria-labelledby="project-modal-title"
         onClick={(e) => e.stopPropagation()}
         className="scrollbar-hide max-h-[92vh] w-full max-w-3xl overflow-y-auto border border-[var(--border-strong)] bg-[var(--background)] p-6 sm:max-h-[88vh] sm:p-10"
-        initial={prefersReducedMotion ? false : { y: 18, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={prefersReducedMotion ? undefined : { y: 18, opacity: 0 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
+        initial={
+          prefersReducedMotion
+            ? false
+            : { clipPath: "inset(100% 0 0 0)", y: 24 }
+        }
+        animate={{ clipPath: "inset(0% 0 0 0)", y: 0 }}
+        exit={
+          prefersReducedMotion
+            ? undefined
+            : { clipPath: "inset(100% 0 0 0)", y: 24 }
+        }
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
       >
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+        >
         <div className="flex items-start justify-between gap-6">
           <div>
             <p className="eyebrow text-[var(--accent)]">{project.shortTitle}</p>
@@ -101,7 +115,13 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
             ✕
           </button>
         </div>
+        </motion.div>
 
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+        >
         <div className="mt-8 border-t border-[var(--border)] pt-8">
           <p className="text-sm leading-7 text-[var(--soft)]">
             {project.description}
@@ -135,7 +155,13 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
             </div>
           </div>
         </div>
+        </motion.div>
 
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+        >
         <div className="mt-9 flex flex-wrap gap-3">
           {project.githubLink && (
             <a
@@ -168,6 +194,7 @@ const ProjectPreviewModal: React.FC<Props> = ({ project, onClose }) => {
             </a>
           )}
         </div>
+        </motion.div>
       </motion.article>
     </motion.div>,
     document.body

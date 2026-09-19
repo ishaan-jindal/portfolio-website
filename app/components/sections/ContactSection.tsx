@@ -1,3 +1,5 @@
+import { Rise, CountUp } from "../utils/motion";
+
 const links = [
   {
     label: "GitHub",
@@ -42,10 +44,14 @@ const links = [
 
 const ContactSection = () => {
   return (
-    <div>
-      <p className="eyebrow">
-        <span className="text-[var(--accent)]">04</span> / 04
-      </p>
+    <Rise scroll>
+      <div>
+        <p className="eyebrow">
+          <span className="text-[var(--accent)]">
+            <CountUp to={4} />
+          </span>{" "}
+          / 04
+        </p>
       <h2 className="section-title mt-4">Get in touch</h2>
       <p className="mt-5 max-w-[34ch] text-sm leading-6 text-[var(--muted)]">
         Open to internships, collaborations, and interesting projects. Reach me
@@ -68,7 +74,8 @@ const ContactSection = () => {
           </li>
         ))}
       </ul>
-    </div>
+      </div>
+    </Rise>
   );
 };
 
