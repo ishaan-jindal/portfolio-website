@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "Ishaan Jindal Portfolio",
+        alt: "Ishaan Jindal — Software Developer",
       },
     ],
     type: "website",

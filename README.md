@@ -35,7 +35,7 @@ Browsers hitting `/about`, `/projects`, or `/contact` are redirected to the corr
 | Styling | Tailwind CSS v4 |
 | Animations | Framer Motion (header menu, project modal only) |
 | Fonts | Inter Tight (display) + Geist Mono (labels) |
-| Icons | Custom IJ mark — `favicon.ico` (16/32/48), `icon-192/512.png`, `apple-touch-icon.png` |
+| Icons | Cat mark — `favicon.ico` (16/32/48), `icon-192/512.png`, `apple-touch-icon.png`, sourced from `public/mascot.jpg` |
 
 ## Features
 
@@ -111,9 +111,10 @@ proxy.ts                     # UA detection, CLI rewrites, browser redirects, CS
 ```
 public/
 ├── ascii-me.webp            # Retained on disk, currently unused by the site
-├── favicon.ico              # IJ mark (16/32/48)
+├── mascot.jpg               # Cat illustration — source artwork for the icons and og.jpg
+├── favicon.ico              # Cat mark (16/32/48)
 ├── icon-192.png / icon-512.png # PWA icons
 ├── apple-touch-icon.png     # iOS touch icon
-├── og.jpg                   # Social preview (1200×630)
+├── og.jpg                   # Social preview (1200×630, generated from mascot.jpg)
 └── resume.pdf               # Downloadable resume
 ```
