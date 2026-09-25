@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getProjects } from "@/app/lib/projects";
 import { isTerminalClient } from "@/app/lib/is-cli";
 import { banner, heading, accent, muted, bullet, link, divider, nav, c } from "../../cli/render";
+import { maybeSecretResponse } from "../../cli/secrets";
 
 export function GET(req: NextRequest) {
   if (!isTerminalClient(req.headers.get("user-agent"))) {
     return NextResponse.redirect(new URL("/", req.url));
   }
+
+  const secret = maybeSecretResponse(req);
+  if (secret) return secret;
 
   const projects = getProjects();
 

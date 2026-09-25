@@ -8,6 +8,8 @@ const CLI_ROUTES: Record<string, string> = {
   "/about": "/api/cli/about",
   "/projects": "/api/cli/projects",
   "/contact": "/api/cli/contact",
+  "/tea": "/api/cli/tea",
+  "/matrix": "/api/cli/matrix",
 };
 
 // Browser-friendly redirects (section anchors on the SPA)
@@ -24,6 +26,8 @@ const KNOWN_ROUTES = new Set([
   "/admin",
   "/admin/dashboard",
   "/manifest.webmanifest",
+  "/tea",
+  "/matrix",
 ]);
 
 // Fail closed: no JWT_SECRET → admin dashboard access is denied
