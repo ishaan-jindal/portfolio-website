@@ -17,14 +17,30 @@ const KONAMI = [
   "a",
 ];
 
-// Typed triggers: rolling lowercase buffer match.
-const TEXT_TRIGGERS: { word: string; effect: "rain" | "invert" | "scramble" }[] = [
+// Typed triggers: rolling lowercase buffer match. Fire immediately.
+const TEXT_TRIGGERS: { word: string; effect: "rain" | "invert" }[] = [
   { word: "1337", effect: "rain" },
   { word: "tea", effect: "invert" },
-  { word: "sudo", effect: "scramble" },
 ];
 
+// `sudo <word>` subcommands mirror the CLI dispatcher. Checked before bare `sudo`.
+// Bare `sudo` (→ scramble) is handled in the key listener with a grace period
+// so `sudo tea` / `sudo hack` / `sudo 1337` can complete first.
+const SUDO_TRIGGERS: { word: string; effect: "rain" | "invert" }[] = [
+  { word: "sudo tea", effect: "invert" },
+  { word: "sudo hack", effect: "rain" },
+  { word: "sudo 1337", effect: "rain" },
+];
+
+// Stage 1 (password prompt) → stage 2 (effect + punchline) delay.
+const SUDO_PASSWORD_MS = 700;
+// How long bare `sudo` waits for a possible `sudo <word>` continuation.
+const SUDO_GRACE_MS = 700;
+
 const SCRAMBLE_CHARS = "!<>-_\\/[]{}—=+*^?#";
+
+const ALIAS_MAIN = "SacredNightmare";
+const ALIAS_ROOT = "root@SacredNightmare";
 
 function scrambleHeadings(restore: () => void) {
   const els = Array.from(
@@ -35,16 +51,54 @@ function scrambleHeadings(restore: () => void) {
     return;
   }
   const originals = els.map((el) => el.textContent ?? "");
+  const originalColors = els.map((el) => el.style.color);
+  const originalTitle = document.title;
+  let titleRestored = false;
+  const restoreTitle = () => {
+    if (!titleRestored) {
+      titleRestored = true;
+      document.title = originalTitle;
+    }
+  };
+  document.title = "root@SacredNightmare:~#";
+  // Accent flash: tint headings while the signal is scrambled.
+  els.forEach((el) => {
+    el.style.color = "var(--accent)";
+  });
+  const restoreDom = () => {
+    els.forEach((el, i) => {
+      if (el.textContent !== originals[i]) el.textContent = originals[i];
+      if (el.style.color !== originalColors[i])
+        el.style.color = originalColors[i];
+    });
+    restoreTitle();
+  };
   const start = performance.now();
   const DUR = 1400;
   let raf = 0;
   const tick = (t: number) => {
     const p = (t - start) / DUR;
     if (p >= 1) {
-      els.forEach((el, i) => {
-        el.textContent = originals[i];
-      });
+      restoreDom();
       restore();
+      return;
+    }
+    // Alias flash window (~45–58%): cut to the hacker handle, then
+    // de-scramble back to the true originals. Never left in the DOM —
+    // restoreDom + the safety timer below always bring back originals.
+    if (p >= 0.45 && p < 0.58) {
+      els.forEach((el, i) => {
+        const alias = i === 0 ? ALIAS_ROOT : ALIAS_MAIN;
+        el.textContent = alias
+          .split("")
+          .map((ch) =>
+            Math.random() < 0.12
+              ? SCRAMBLE_CHARS[(Math.random() * SCRAMBLE_CHARS.length) | 0]
+              : ch
+          )
+          .join("");
+      });
+      raf = requestAnimationFrame(tick);
       return;
     }
     els.forEach((el, i) => {
@@ -61,12 +115,10 @@ function scrambleHeadings(restore: () => void) {
     raf = requestAnimationFrame(tick);
   };
   raf = requestAnimationFrame(tick);
-  // Safety: never leave the DOM scrambled.
+  // Safety: never leave the DOM scrambled, tinted, aliased, or re-titled.
   window.setTimeout(() => {
     cancelAnimationFrame(raf);
-    els.forEach((el, i) => {
-      if (el.textContent !== originals[i]) el.textContent = originals[i];
-    });
+    restoreDom();
   }, DUR + 500);
 }
 
@@ -101,6 +153,8 @@ export default function KonamiChaos() {
   const typed = useRef("");
   const busy = useRef(false);
   const toastTimer = useRef<number>(0);
+  const sudoTimer = useRef<number>(0);
+  const stageTimer = useRef<number>(0);
 
   const announce = useCallback((msg: string) => {
     setToast(msg);
@@ -124,14 +178,57 @@ export default function KonamiChaos() {
       };
       if (effect === "rain") {
         setRain(true);
-        announce("konami accepted // enjoy the rain");
+        announce("[ 1337.042 ] konami: ascii rain mounted");
       } else if (effect === "invert") {
         announce("tea break // polarity reversed");
         invertFlash(release);
       } else {
-        announce("sudo says hi // signal scrambled");
+        announce("sudo: session opened for SacredNightmare // uid=0(root)");
         scrambleHeadings(release);
       }
+    },
+    [announce]
+  );
+
+  // Mini privilege-escalation sequence: password prompt, then effect + punchline.
+  // Busy stays locked across both stages; rain releases via AsciiRain onDone.
+  const fireSudo = useCallback(
+    (effect: "rain" | "invert" | "scramble", sub: string | null) => {
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      const label = sub ? `sudo ${sub}` : "sudo";
+      if (reduced) {
+        announce(`${label} accepted. motion reduced — chaos withheld.`);
+        return;
+      }
+      if (busy.current) return;
+      busy.current = true;
+      const release = () => {
+        busy.current = false;
+      };
+      announce("[sudo] password for guest: ••••••••");
+      window.clearTimeout(stageTimer.current);
+      stageTimer.current = window.setTimeout(() => {
+        if (effect === "rain") {
+          setRain(true);
+          announce(
+            sub
+              ? `sudo: ${sub} executed as SacredNightmare // rain mounted`
+              : "[ 1337.042 ] sudo: rain mounted for SacredNightmare"
+          );
+        } else if (effect === "invert") {
+          announce(
+            `sudo: ${sub ?? "tea"} executed as SacredNightmare // uid=0(root)`
+          );
+          invertFlash(release);
+        } else {
+          announce(
+            "sudo: session opened for SacredNightmare // uid=0(root) gid=0(root)"
+          );
+          scrambleHeadings(release);
+        }
+      }, SUDO_PASSWORD_MS);
     },
     [announce]
   );
@@ -158,9 +255,46 @@ export default function KonamiChaos() {
         fire("rain", "konami");
         return;
       }
-      // Typed-word triggers (letters/digits only)
-      if (/^[a-z0-9]$/i.test(e.key)) {
-        typed.current = (typed.current + e.key.toLowerCase()).slice(-8);
+      // Typed-word triggers (letters/digits/spaces, rolling 12-char buffer)
+      if (/^[a-z0-9 ]$/i.test(e.key)) {
+        typed.current = (typed.current + e.key.toLowerCase()).slice(-12);
+        // `sudo <word>` wins over bare words.
+        for (const t of SUDO_TRIGGERS) {
+          if (typed.current.endsWith(t.word)) {
+            typed.current = "";
+            window.clearTimeout(sudoTimer.current);
+            fireSudo(t.effect, t.word.slice("sudo ".length));
+            return;
+          }
+        }
+        // Bare `sudo` waits a beat for a possible `sudo <word>` continuation;
+        // each further sudo-prefixed keystroke extends the grace period.
+        if (/sudo( [a-z0-9]*)?$/.test(typed.current)) {
+          window.clearTimeout(sudoTimer.current);
+          sudoTimer.current = window.setTimeout(() => {
+            const buf = typed.current;
+            if (buf.endsWith("sudo")) {
+              typed.current = "";
+              fireSudo("scramble", null);
+            } else {
+              const m = buf.match(/sudo ([a-z0-9]+)$/);
+              if (
+                m &&
+                !SUDO_TRIGGERS.some((t) => t.word === `sudo ${m[1]}`)
+              ) {
+                typed.current = "";
+                announce(`sudo: ${m[1]}: command not found`);
+              }
+            }
+          }, SUDO_GRACE_MS);
+          return;
+        }
+        // `whoami` is a quiet toast-only answer — no chaos, no busy lock.
+        if (typed.current.endsWith("whoami")) {
+          typed.current = "";
+          announce("root — no, SacredNightmare");
+          return;
+        }
         for (const t of TEXT_TRIGGERS) {
           if (typed.current.endsWith(t.word)) {
             typed.current = "";
@@ -172,9 +306,16 @@ export default function KonamiChaos() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [fire]);
+  }, [fire, fireSudo, announce]);
 
-  useEffect(() => () => window.clearTimeout(toastTimer.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(toastTimer.current);
+      window.clearTimeout(sudoTimer.current);
+      window.clearTimeout(stageTimer.current);
+    },
+    []
+  );
 
   return (
     <>
