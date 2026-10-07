@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter_Tight, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/Header";
+import KonamiChaos from "./components/easter/KonamiChaos";
+import ConsoleGreeting from "./components/easter/ConsoleGreeting";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -96,6 +98,8 @@ export default function RootLayout({
         <main id="main-content" className="flex-1 flex flex-col">
           {children}
         </main>
+        <KonamiChaos />
+        <ConsoleGreeting />
       </body>
     </html>
   );
