@@ -90,7 +90,7 @@ export async function proxy(req: NextRequest) {
     if (!token || !JWT_SECRET) {
       const url = req.nextUrl.clone();
       url.pathname = "/admin";
-      return NextResponse.redirect(url);
+      return withSecurityHeaders(NextResponse.redirect(url), csp);
     }
 
     try {
@@ -98,7 +98,7 @@ export async function proxy(req: NextRequest) {
     } catch {
       const url = req.nextUrl.clone();
       url.pathname = "/admin";
-      return NextResponse.redirect(url);
+      return withSecurityHeaders(NextResponse.redirect(url), csp);
     }
 
     return withSecurityHeaders(
@@ -121,14 +121,14 @@ export async function proxy(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
     url.hash = redirect.replace("/", "");
-    return NextResponse.redirect(url, 308);
+    return withSecurityHeaders(NextResponse.redirect(url, 308), csp);
   }
 
   // Unknown paths → redirect to home (browsers and CLI alike)
   if (!KNOWN_ROUTES.has(pathname)) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
-    return NextResponse.redirect(url, 308);
+    return withSecurityHeaders(NextResponse.redirect(url, 308), csp);
   }
 
   return withSecurityHeaders(
