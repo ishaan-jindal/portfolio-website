@@ -19,7 +19,3 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
-        env:
-          JWT_SECRET: ci
-          ADMIN_PASSWORD_HASH: ci
-          GITHUB_TOKEN: ci
