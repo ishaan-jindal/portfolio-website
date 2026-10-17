@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isTerminalClient } from "@/app/lib/is-cli";
 import { banner, accent, label, link, divider, nav, c } from "../cli/render";
-import { maybeSecretResponse } from "../cli/secrets";
 
 // ── Home / root CLI response ────────────────────────────────────────
 export function GET(req: NextRequest) {
@@ -9,9 +8,6 @@ export function GET(req: NextRequest) {
     // Browsers should use the SPA — the CLI routes serve text/plain only.
     return NextResponse.redirect(new URL("/", req.url));
   }
-
-  const secret = maybeSecretResponse(req);
-  if (secret) return secret;
 
   const body = [
     "",
