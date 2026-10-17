@@ -95,7 +95,6 @@ data/
 ├── projects.json            # Projects (title, category, stack, links) — edited by hand
 └── skills.json              # Skill groups shared by the web skills section and CLI /about
 proxy.ts                     # UA detection, CLI rewrites, browser redirects, CSP nonces
-```
 public/
 ├── mascot.jpg               # Cat illustration — source artwork for the icons and og.jpg
 ├── favicon.ico              # Cat mark (16/32/48)
