@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
 import { isTerminalClient } from "./app/lib/is-cli";
 
 // Routes that have CLI equivalents
@@ -8,8 +7,6 @@ const CLI_ROUTES: Record<string, string> = {
   "/about": "/api/cli/about",
   "/projects": "/api/cli/projects",
   "/contact": "/api/cli/contact",
-  "/tea": "/api/cli/tea",
-  "/matrix": "/api/cli/matrix",
 };
 
 // Browser-friendly redirects (section anchors on the SPA)
@@ -23,17 +20,8 @@ const BROWSER_REDIRECTS: Record<string, string> = {
 const KNOWN_ROUTES = new Set([
   "/",
   "/resume",
-  "/admin",
-  "/admin/dashboard",
   "/manifest.webmanifest",
-  "/tea",
-  "/matrix",
 ]);
-
-// Fail closed: no JWT_SECRET → admin dashboard access is denied
-const JWT_SECRET = process.env.JWT_SECRET
-  ? new TextEncoder().encode(process.env.JWT_SECRET)
-  : null;
 
 function buildCsp(nonce: string): string {
   return [
@@ -82,37 +70,6 @@ export async function proxy(req: NextRequest) {
         csp
       );
     }
-  }
-
-  // Admin dashboard — require JWT authentication
-  if (pathname === "/admin/dashboard") {
-    const token = req.cookies.get("admin_token")?.value;
-    if (!token || !JWT_SECRET) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/admin";
-      return withSecurityHeaders(NextResponse.redirect(url), csp);
-    }
-
-    try {
-      await jwtVerify(token, JWT_SECRET);
-    } catch {
-      const url = req.nextUrl.clone();
-      url.pathname = "/admin";
-      return withSecurityHeaders(NextResponse.redirect(url), csp);
-    }
-
-    return withSecurityHeaders(
-      NextResponse.next({ request: { headers: requestHeaders } }),
-      csp
-    );
-  }
-
-  // Admin login page — pass through
-  if (pathname === "/admin") {
-    return withSecurityHeaders(
-      NextResponse.next({ request: { headers: requestHeaders } }),
-      csp
-    );
   }
 
   // Browser clients → redirect known section paths to /#section
