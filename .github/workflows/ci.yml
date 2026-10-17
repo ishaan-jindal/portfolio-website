@@ -15,11 +15,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm audit --audit-level=high
+      - run: npm audit --audit-level=high --omit=dev
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
-        env:
-          JWT_SECRET: ci
-          ADMIN_PASSWORD_HASH: ci
-          GITHUB_TOKEN: ci

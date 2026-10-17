@@ -18,6 +18,17 @@ const sections = [
 
 const disciplines = ["Build", "Deploy", "Automate", "Repeat"];
 
+const Disciplines = () => (
+  <>
+    {disciplines.map((word, i) => (
+      <React.Fragment key={word}>
+        {i > 0 && <span className="eyebrow">/</span>}
+        <span className="eyebrow">{word}</span>
+      </React.Fragment>
+    ))}
+  </>
+);
+
 const NavItem = ({
   section,
   active,
@@ -80,40 +91,34 @@ const Header = () => {
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    let frame = 0;
+    const visible = new Map<string, boolean>();
+    // Sections can be nested inside positioned wrappers; the observer band
+    // (120px from the top down to 40% of the viewport) reproduces the old
+    // "first section whose top has crossed 120px" scroll probe.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) visible.set(e.target.id, e.isIntersecting);
+        const current = sections.find((s) => visible.get(s.id));
+        if (current) setActive(current.id);
+      },
+      { rootMargin: "-120px 0px -60% 0px" }
+    );
+    for (const section of sections) {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    }
 
-    const handler = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        // Sections can be nested inside positioned wrappers, so offsetTop is
-        // unreliable — always measure against the viewport.
-        const probe = 120;
-        let current = sections[0].id;
-        for (const section of sections) {
-          const el = document.getElementById(section.id);
-          if (!el) continue;
-          if (el.getBoundingClientRect().top <= probe) {
-            current = section.id;
-          }
-        }
-
-        // Pin the last section when the page cannot scroll any further
-        const doc = document.documentElement;
-        if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
-          current = sections[sections.length - 1].id;
-        }
-
-        setActive(current);
-      });
+    // Pin the last section when the page cannot scroll any further
+    const pinLast = () => {
+      const doc = document.documentElement;
+      if (window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+        setActive(sections[sections.length - 1].id);
+      }
     };
-
-    window.addEventListener("scroll", handler, { passive: true });
-    window.addEventListener("resize", handler, { passive: true });
-    handler();
+    window.addEventListener("scroll", pinLast, { passive: true });
     return () => {
-      window.removeEventListener("scroll", handler);
-      window.removeEventListener("resize", handler);
-      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", pinLast);
     };
   }, []);
 
@@ -198,12 +203,7 @@ const Header = () => {
           </nav>
 
           <div className="hidden flex-1 items-center justify-end gap-2 xl:flex">
-            {disciplines.map((word, i) => (
-              <React.Fragment key={word}>
-                {i > 0 && <span className="eyebrow">/</span>}
-                <span className="eyebrow">{word}</span>
-              </React.Fragment>
-            ))}
+            <Disciplines />
           </div>
 
           {/* Mobile hamburger button */}
@@ -273,12 +273,7 @@ const Header = () => {
               transition={{ duration: 0.3, delay: 0.25, ease: EASE }}
               className="mt-14 flex flex-wrap items-center gap-2"
             >
-              {disciplines.map((word, i) => (
-                <React.Fragment key={word}>
-                  {i > 0 && <span className="eyebrow">/</span>}
-                  <span className="eyebrow">{word}</span>
-                </React.Fragment>
-              ))}
+              <Disciplines />
             </motion.div>
           </motion.div>
         )}

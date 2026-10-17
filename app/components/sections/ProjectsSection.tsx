@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import type { Project } from "@/app/lib/projects";
 import ProjectIndexRow from "../utils/ProjectIndexRow";
 import ProjectPreviewModal from "../utils/ProjectPreviewModal";
-import { Stagger, StaggerItem, CountUp, Rise } from "../utils/motion";
+import { Stagger, StaggerItem, Rise } from "../utils/motion";
 
 type Props = {
   projects: Project[];
@@ -21,7 +21,7 @@ const ProjectsSection = ({ projects }: Props) => {
           <div>
             <p className="eyebrow">
               <span className="text-[var(--accent)]">
-                <CountUp to={2} />
+                {String(2).padStart(2, "0")}
               </span>{" "}
               / 04
             </p>

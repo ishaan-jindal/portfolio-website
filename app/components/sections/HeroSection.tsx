@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ClipReveal, Rise, DrawRule, CountUp, Flicker } from "../utils/motion";
+import { ClipReveal, Rise, DrawRule } from "../utils/motion";
 import QuoteBlock, { QuoteContent } from "./QuoteBlock";
 import { getFallbackQuote } from "@/app/lib/quotes";
 
@@ -12,13 +12,11 @@ const HeroSection = () => {
       <div className="flex items-center justify-between">
         <p className="eyebrow">
           <span className="text-[var(--accent)]">
-            <CountUp to={1} />
+            {String(1).padStart(2, "0")}
           </span>{" "}
           / 04
         </p>
-        <p className="eyebrow">
-          <Flicker text={`[ ${year} ]`} />
-        </p>
+        <p className="eyebrow">[ {year} ]</p>
       </div>
 
       <div className="mt-8 grid gap-12 lg:mt-10 lg:grid-cols-[1.35fr_1fr] lg:gap-0">

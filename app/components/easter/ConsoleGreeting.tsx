@@ -20,6 +20,32 @@ declare global {
   }
 }
 
+const SPELLS: Record<string, { hint: string; reply: string; route?: string }> = {
+  whoami: {
+    hint: "who runs this thing",
+    reply:
+      "ishaan jindal — software developer (india). terminals, apps, infra. hire him maybe?",
+  },
+  tea: { hint: "the /tea room", reply: "brewing…", route: "/tea" },
+  matrix: {
+    hint: "there is no spoon (there is a /matrix)",
+    reply: "follow the white rabbit.",
+    route: "/matrix",
+  },
+  konami: {
+    hint: "the old ways still work: ↑↑↓↓←→←→BA",
+    reply:
+      "↑↑↓↓←→←→BA — type it anywhere (outside inputs). also try typing: 1337, tea, sudo.",
+  },
+};
+
+const HELP = [
+  "available spells:",
+  ...Object.entries(SPELLS).map(
+    ([name, s]) => `  __ishaan.${name}()`.padEnd(21) + `— ${s.hint}`
+  ),
+].join("\n");
+
 /**
  * Console easter egg: ASCII banner, hints, and window.__ishaan helpers.
  * Client-only, runs in dev + prod, exposes zero secrets.
@@ -28,29 +54,18 @@ export default function ConsoleGreeting() {
   const router = useRouter();
 
   useEffect(() => {
-    const help = () => [
-      "available spells:",
-      "  __ishaan.whoami()  — who runs this thing",
-      "  __ishaan.tea()     — the /tea room",
-      "  __ishaan.matrix()  — there is no spoon (there is a /matrix)",
-      "  __ishaan.konami()  — the old ways still work: ↑↑↓↓←→←→BA",
-    ].join("\n");
-
     window.__ishaan = {
-      help: () => help(),
-      whoami: () =>
-        "ishaan jindal — software developer (india). terminals, apps, infra. hire him maybe?",
-      tea: () => {
-        router.push("/tea");
-        return "brewing…";
-      },
-      matrix: () => {
-        router.push("/matrix");
-        return "follow the white rabbit.";
-      },
-      konami: () =>
-        "↑↑↓↓←→←→BA — type it anywhere (outside inputs). also try typing: 1337, tea, sudo.",
-    };
+      help: () => HELP,
+      ...Object.fromEntries(
+        Object.entries(SPELLS).map(([name, s]) => [
+          name,
+          () => {
+            if (s.route) router.push(s.route);
+            return s.reply;
+          },
+        ])
+      ),
+    } as NonNullable<Window["__ishaan"]>;
 
     // Styled banner + a warning with the real hints.
     console.log(

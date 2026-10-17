@@ -31,7 +31,7 @@
   --color-foreground: var(--foreground);
 
   --font-sans: var(--font-inter-tight);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 html {
@@ -108,7 +108,7 @@ h6 {
 
 /* Small mono label — "01 / 04", categories, meta. */
 .eyebrow {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   line-height: 1;
   letter-spacing: 0.22em;
@@ -135,11 +135,6 @@ h6 {
   text-transform: uppercase;
 }
 
-.rule {
-  border: 0;
-  border-top: 1px solid var(--border);
-}
-
 .skip-link {
   position: absolute;
   left: 1rem;
@@ -147,7 +142,7 @@ h6 {
   z-index: 200;
   background: var(--foreground);
   color: var(--background);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -165,7 +160,7 @@ h6 {
   display: inline-flex;
   align-items: baseline;
   gap: 0.45rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -197,13 +192,6 @@ h6 {
   background: var(--foreground);
 }
 
-.index-row:focus-visible,
-.nav-link:focus-visible,
-.contact-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
 /* ── Project index rows ────────────────────────────────────────── */
 
 .index-row {
@@ -231,7 +219,7 @@ h6 {
 
 .index-row__num {
   grid-area: num;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.75rem;
   line-height: 1.6;
   color: var(--muted);
@@ -302,7 +290,7 @@ h6 {
 
 .index-row__cat {
   grid-area: cat;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -350,7 +338,7 @@ h6 {
   display: inline-flex;
   align-items: center;
   gap: 0.85rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.8125rem;
   color: var(--soft);
   transition: color 180ms ease;
@@ -384,7 +372,7 @@ h6 {
   background: transparent;
   color: var(--soft);
   padding: 0.3rem 0.55rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   line-height: 1.2;
   letter-spacing: 0.06em;
@@ -400,7 +388,7 @@ h6 {
   background: transparent;
   color: var(--foreground);
   padding: 0.7rem 1.1rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   line-height: 1.2;
   letter-spacing: 0.16em;
@@ -425,6 +413,9 @@ h6 {
   color: var(--background);
 }
 
+.index-row:focus-visible,
+.nav-link:focus-visible,
+.contact-link:focus-visible,
 .text-button:focus-visible,
 .text-input:focus-visible {
   outline: 2px solid var(--accent);
@@ -435,7 +426,7 @@ h6 {
   display: block;
   margin-bottom: 0.45rem;
   color: var(--accent);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -537,7 +528,7 @@ body:has(.admin-dashboard-wrapper) main {
 }
 
 .admin-login-subtitle {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   color: var(--muted);
@@ -554,7 +545,7 @@ body:has(.admin-dashboard-wrapper) main {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.75rem;
   color: var(--accent);
   padding: 0.65rem 0.85rem;
@@ -582,7 +573,7 @@ body:has(.admin-dashboard-wrapper) main {
 }
 
 .admin-login-back-link {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.75rem;
   color: var(--muted);
   text-decoration: none;
@@ -631,7 +622,7 @@ body:has(.admin-dashboard-wrapper) main {
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.75rem;
   margin-bottom: 1rem;
   position: relative;
@@ -691,14 +682,14 @@ body:has(.admin-dashboard-wrapper) main {
   flex-shrink: 0;
 }
 
-.admin-btn--discard {
-  border-color: var(--border) !important;
-  color: var(--muted) !important;
-  font-size: 0.6875rem !important;
+.text-button.admin-btn--discard {
+  border-color: var(--border);
+  color: var(--muted);
+  font-size: 0.6875rem;
 }
 
-.admin-btn--discard:hover {
-  color: var(--foreground) !important;
+.text-button.admin-btn--discard:hover {
+  color: var(--foreground);
 }
 
 .admin-saving-bar {
@@ -804,14 +795,14 @@ body:has(.admin-dashboard-wrapper) main {
   margin-top: 1.5rem;
 }
 
-.admin-btn--danger {
-  border-color: rgba(255, 77, 46, 0.5) !important;
-  color: var(--accent) !important;
+.text-button.admin-btn--danger {
+  border-color: rgba(255, 77, 46, 0.5);
+  color: var(--accent);
 }
 
-.admin-btn--danger:hover {
-  background: rgba(255, 77, 46, 0.15) !important;
-  border-color: var(--accent) !important;
+.text-button.admin-btn--danger:hover {
+  background: rgba(255, 77, 46, 0.15);
+  border-color: var(--accent);
 }
 
 /* Edit Modal */
@@ -860,7 +851,7 @@ body:has(.admin-dashboard-wrapper) main {
 .admin-textarea {
   resize: vertical;
   min-height: 80px;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.8rem;
   line-height: 1.6;
 }
@@ -896,7 +887,7 @@ body:has(.admin-dashboard-wrapper) main {
   gap: 0.35rem;
   padding: 0.25rem 0.5rem;
   border: 1px solid var(--border);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  @apply font-mono;
   font-size: 0.6875rem;
   color: var(--soft);
   background: transparent;
