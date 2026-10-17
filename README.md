@@ -45,7 +45,7 @@ Browsers hitting `/about`, `/projects`, or `/contact` are redirected to the corr
 - **Resume** — downloadable PDF served from `/resume`
 - **CLI Mode** — full terminal portfolio via `curl` with ANSI colors, figlet banner, and per-page navigation
 - **Smart Routing** — middleware-based UA detection and browser redirects for clean URLs
-- **Security** — CSP with per-request nonces, security headers, rate-limited admin login
+- **Security** — CSP with per-request nonces and security headers
 
 ## Getting Started
 
@@ -65,25 +65,14 @@ npm run typecheck  # TypeScript type check
 
 ## Environment Variables
 
-The site builds and runs without any env vars. For the admin panel
-(`/admin`), create a `.env.local` file — `JWT_SECRET` is required and has
-**no fallback**:
-
-```env
-ADMIN_PASSWORD_HASH=scrypt_N_r_p_saltHex_keyHex
-JWT_SECRET=long_random_string
-GITHUB_TOKEN=github_personal_access_token
-```
-
-> Note: rate limiting is in-memory (per serverless instance), so it protects against casual spam and brute force but not distributed abuse.
+The site builds and runs without any env vars. Project content lives in
+`data/projects.json` — edit it by hand and `git commit`.
 
 ## Project Structure
 
 ```
 app/
-├── admin/                   # Admin login + dashboard (JWT-gated)
 ├── api/
-│   ├── admin/               # Auth (scrypt, rate-limited) + GitHub-backed projects CRUD
 │   ├── cli/                 # Terminal (curl) API routes
 │   │   ├── render.ts        # ANSI color helpers, figlet banner, layout utils
 │   │   ├── route.ts         # GET / — home banner
@@ -95,22 +84,19 @@ app/
 │   ├── sections/            # HeroSection, ProjectsSection, SkillsSection, ContactSection
 │   └── utils/               # ProjectIndexRow, ProjectPreviewModal
 ├── lib/
-│   ├── auth.ts              # JWT sessions, scrypt password verification
-│   ├── github.ts            # Projects sync via GitHub Contents API
 │   ├── is-cli.ts            # Shared terminal-UA detection
 │   ├── projects.ts          # Project data & types
 │   ├── skills.ts            # Skill-group data & types
-│   └── rate-limit.ts        # In-memory sliding window + lockout
+│   └── quotes.ts            # Local quote pool (data/quotes.json)
 ├── globals.css              # Design tokens, component styles, responsive rules
 ├── layout.tsx               # Root layout & metadata
 └── page.tsx                 # Home page
 data/
-├── projects.json            # Projects (title, category, stack, links) — edited via /admin
+├── projects.json            # Projects (title, category, stack, links) — edited by hand
 └── skills.json              # Skill groups shared by the web skills section and CLI /about
 proxy.ts                     # UA detection, CLI rewrites, browser redirects, CSP nonces
 ```
 public/
-├── ascii-me.webp            # Retained on disk, currently unused by the site
 ├── mascot.jpg               # Cat illustration — source artwork for the icons and og.jpg
 ├── favicon.ico              # Cat mark (16/32/48)
 ├── icon-192.png / icon-512.png # PWA icons
