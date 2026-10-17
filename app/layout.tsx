@@ -62,10 +62,9 @@ export const metadata: Metadata = {
 };
 
 const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
   name: "Ishaan Jindal",
   url: "https://ishaanjindal.tech",
+  "@id": "https://ishaanjindal.tech/#person",
   jobTitle: "Software Developer",
   description: siteDescription,
   email: "mailto:ishaanjindal2006@gmail.com",
@@ -74,6 +73,14 @@ const personSchema = {
     "https://linkedin.com/in/jindal-ishaan",
     "https://x.com/Ishaan1899",
   ],
+  "@context": "https://schema.org",
+  "@type": "Person",
+};
+
+const profilePageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: personSchema,
 };
 
 export default function RootLayout({
@@ -88,7 +95,7 @@ export default function RootLayout({
       >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageSchema) }}
         />
 
         <Header />

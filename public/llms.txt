@@ -1,0 +1,14 @@
+Ishaan Jindal — software developer building terminal tools, mobile apps, web experiments, and the infrastructure behind them.
+Site: https://ishaanjindal.tech
+
+Projects:
+- Runnix: secure, isolated code execution service with Docker + gVisor sandbox.
+- Termchat: anonymous terminal chatrooms for realtime collaboration.
+- Termchat Mobile: mobile companion for termchat, closed beta on Google Play.
+- SwiftWrite: local-first Flutter writing app with Markdown and optional sync.
+- WeDroid: full-stack club management app for members, events, and updates.
+- Steal CSS: experiment that extracts and remixes a page's styling.
+
+GitHub: https://github.com/ishaan-jindal
+LinkedIn: https://linkedin.com/in/jindal-ishaan
+Sitemap: https://ishaanjindal.tech/sitemap.xml

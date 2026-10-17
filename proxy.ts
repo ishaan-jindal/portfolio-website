@@ -81,8 +81,9 @@ export async function proxy(req: NextRequest) {
     return withSecurityHeaders(NextResponse.redirect(url, 308), csp);
   }
 
-  // Unknown paths → redirect to home (browsers and CLI alike)
-  if (!KNOWN_ROUTES.has(pathname)) {
+  // Unknown paths → redirect to home (browsers and CLI alike);
+  // dynamic project pages under /projects/ pass through
+  if (!KNOWN_ROUTES.has(pathname) && !pathname.startsWith("/projects/")) {
     const url = req.nextUrl.clone();
     url.pathname = "/";
     return withSecurityHeaders(NextResponse.redirect(url, 308), csp);
