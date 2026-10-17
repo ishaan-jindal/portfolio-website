@@ -1,4 +1,4 @@
-import { Rise, CountUp } from "../utils/motion";
+import { Rise } from "../utils/motion";
 
 const links = [
   {
@@ -58,7 +58,7 @@ const ContactSection = () => {
       <div>
         <p className="eyebrow">
           <span className="text-[var(--accent)]">
-            <CountUp to={4} />
+            {String(4).padStart(2, "0")}
           </span>{" "}
           / 04
         </p>

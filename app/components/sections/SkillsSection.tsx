@@ -1,5 +1,5 @@
 import { getSkills } from "@/app/lib/skills";
-import { Stagger, StaggerItem, CountUp, Rise } from "../utils/motion";
+import { Stagger, StaggerItem, Rise } from "../utils/motion";
 
 const SkillsSection = () => {
   const skillGroups = getSkills();
@@ -10,7 +10,7 @@ const SkillsSection = () => {
         <div>
           <p className="eyebrow">
             <span className="text-[var(--accent)]">
-              <CountUp to={3} />
+              {String(3).padStart(2, "0")}
             </span>{" "}
             / 04
           </p>

@@ -163,7 +163,14 @@ export default function KonamiChaos() {
   }, []);
 
   const fire = useCallback(
-    (effect: "rain" | "invert" | "scramble", label: string) => {
+    // label feeds the reduced-motion toast; delay > 0 runs the sudo
+    // two-stage sequence (password prompt, then effect) under one busy lock.
+    (
+      effect: "rain" | "invert" | "scramble",
+      label: string,
+      msg: string,
+      delay = 0
+    ) => {
       const reduced = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
@@ -176,59 +183,25 @@ export default function KonamiChaos() {
       const release = () => {
         busy.current = false;
       };
-      if (effect === "rain") {
-        setRain(true);
-        announce("[ 1337.042 ] konami: ascii rain mounted");
-      } else if (effect === "invert") {
-        announce("tea break // polarity reversed");
-        invertFlash(release);
-      } else {
-        announce("sudo: session opened for SacredNightmare // uid=0(root)");
-        scrambleHeadings(release);
-      }
-    },
-    [announce]
-  );
-
-  // Mini privilege-escalation sequence: password prompt, then effect + punchline.
-  // Busy stays locked across both stages; rain releases via AsciiRain onDone.
-  const fireSudo = useCallback(
-    (effect: "rain" | "invert" | "scramble", sub: string | null) => {
-      const reduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-      const label = sub ? `sudo ${sub}` : "sudo";
-      if (reduced) {
-        announce(`${label} accepted. motion reduced — chaos withheld.`);
-        return;
-      }
-      if (busy.current) return;
-      busy.current = true;
-      const release = () => {
-        busy.current = false;
-      };
-      announce("[sudo] password for guest: ••••••••");
-      window.clearTimeout(stageTimer.current);
-      stageTimer.current = window.setTimeout(() => {
+      const run = () => {
         if (effect === "rain") {
           setRain(true);
-          announce(
-            sub
-              ? `sudo: ${sub} executed as SacredNightmare // rain mounted`
-              : "[ 1337.042 ] sudo: rain mounted for SacredNightmare"
-          );
+          announce(msg);
         } else if (effect === "invert") {
-          announce(
-            `sudo: ${sub ?? "tea"} executed as SacredNightmare // uid=0(root)`
-          );
+          announce(msg);
           invertFlash(release);
         } else {
-          announce(
-            "sudo: session opened for SacredNightmare // uid=0(root) gid=0(root)"
-          );
+          announce(msg);
           scrambleHeadings(release);
         }
-      }, SUDO_PASSWORD_MS);
+      };
+      if (delay > 0) {
+        announce("[sudo] password for guest: ••••••••");
+        window.clearTimeout(stageTimer.current);
+        stageTimer.current = window.setTimeout(run, delay);
+      } else {
+        run();
+      }
     },
     [announce]
   );
@@ -252,7 +225,7 @@ export default function KonamiChaos() {
         seq.current.every((k, i) => k === KONAMI[i])
       ) {
         seq.current = [];
-        fire("rain", "konami");
+        fire("rain", "konami", "[ 1337.042 ] konami: ascii rain mounted");
         return;
       }
       // Typed-word triggers (letters/digits/spaces, rolling 12-char buffer)
@@ -261,9 +234,17 @@ export default function KonamiChaos() {
         // `sudo <word>` wins over bare words.
         for (const t of SUDO_TRIGGERS) {
           if (typed.current.endsWith(t.word)) {
-            typed.current = "";
+              typed.current = "";
             window.clearTimeout(sudoTimer.current);
-            fireSudo(t.effect, t.word.slice("sudo ".length));
+            const sub = t.word.slice("sudo ".length);
+            fire(
+              t.effect,
+              t.word,
+              `sudo: ${sub} executed as SacredNightmare // ${
+                t.effect === "rain" ? "rain mounted" : "uid=0(root)"
+              }`,
+              SUDO_PASSWORD_MS
+            );
             return;
           }
         }
@@ -275,7 +256,12 @@ export default function KonamiChaos() {
             const buf = typed.current;
             if (buf.endsWith("sudo")) {
               typed.current = "";
-              fireSudo("scramble", null);
+              fire(
+                "scramble",
+                "sudo",
+                "sudo: session opened for SacredNightmare // uid=0(root) gid=0(root)",
+                SUDO_PASSWORD_MS
+              );
             } else {
               const m = buf.match(/sudo ([a-z0-9]+)$/);
               if (
@@ -298,7 +284,13 @@ export default function KonamiChaos() {
         for (const t of TEXT_TRIGGERS) {
           if (typed.current.endsWith(t.word)) {
             typed.current = "";
-            fire(t.effect, t.word);
+            fire(
+              t.effect,
+              t.word,
+              t.effect === "rain"
+                ? "[ 1337.042 ] konami: ascii rain mounted"
+                : "tea break // polarity reversed"
+            );
             return;
           }
         }
@@ -306,7 +298,7 @@ export default function KonamiChaos() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [fire, fireSudo, announce]);
+  }, [fire, announce]);
 
   useEffect(
     () => () => {
