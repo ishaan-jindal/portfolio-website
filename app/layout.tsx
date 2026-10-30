@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/layout/Header";
 import KonamiChaos from "./components/easter/KonamiChaos";
 import ConsoleGreeting from "./components/easter/ConsoleGreeting";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -107,6 +108,9 @@ export default function RootLayout({
         </main>
         <KonamiChaos />
         <ConsoleGreeting />
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
       </body>
     </html>
   );
